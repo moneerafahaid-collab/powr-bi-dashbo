@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+
+# نسخ مكررة من التصدير
+src (3)/
+package (3).json
+pnpm-workspace (3).yaml
+postcss.config (2).mjs
+vite.config (2).ts
+default_shadcn_theme (4).css
+ATTRIBUTIONS (3).md
+guidelines (3)/
