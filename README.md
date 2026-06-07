@@ -16,11 +16,22 @@ npm run build
 npm run preview
 ```
 
-## النشر
+## النشر على GitHub Pages
 
-1. ارفع المشروع على GitHub
-2. فعّل **GitHub Pages** من Settings → Pages → Source: GitHub Actions أو branch `main` / folder `dist`
-3. أو انسخ مجلد `dist` إلى أي سيرفر (IIS, Nginx, Netlify...)
+1. من repo على GitHub: **Settings → Pages**
+2. **Source:** اختر **GitHub Actions**
+3. بعد كل push على `main` ينشر تلقائياً
+
+**رابط الموقع:**
+`https://moneerafahaid-collab.github.io/powr-bi-dashbo/`
+
+## النشر على سيرفر خاص
+
+```bash
+npm run build
+```
+
+ارفع محتويات مجلد `dist` إلى السيرفر.
 
 ## شاشة العرض
 
