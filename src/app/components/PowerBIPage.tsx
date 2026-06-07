@@ -39,8 +39,8 @@ export function PowerBIPage({ data, mode = 'desktop' }: PowerBIPageProps) {
   const targetProgress = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
 
   const compareData = [
-    { name: 'الإجمالي', value: data.total, fill: '#0d47a1' },
-    { name: periodMeta.label, value: data.periodValue, fill: periodMeta.color }
+    { name: 'الإجمالي', value: data.total, fill: '#0a3d6e' },
+    { name: periodMeta.label, value: data.periodValue, fill: '#00635b' }
   ];
 
   const trendPoints = 6;
@@ -55,81 +55,70 @@ export function PowerBIPage({ data, mode = 'desktop' }: PowerBIPageProps) {
     ...(data.target ? [{ label: 'المستهدف', sub: 'الهدف المحدد', value: data.target, color: '#f59e0b', highlight: false }] : [])
   ];
 
-  /* ── تخطيط شاشة العرض الطولية ── */
+  /* ── شاشة العرض — تصميم حكومي رسمي ── */
   if (isSignage) {
     return (
-      <div className="flex flex-col h-full gap-2 px-3 py-2 overflow-hidden">
+      <div className="flex flex-col h-full gap-2 px-3 py-2 overflow-hidden bg-[#e8ecf1]">
         {/* الإجمالي */}
-        <div className="bg-gradient-to-bl from-[#0d47a1] to-[#1565c0] rounded-xl p-4 text-white shadow-lg relative overflow-hidden shrink-0">
-          <div className="relative text-center">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <Sigma className="w-4 h-4 text-white/80" />
-              <span className="text-white/80 text-xs font-medium">الإجمالي</span>
-            </div>
-            <p className="text-4xl font-bold tracking-tight">{formatNumber(data.total)}</p>
-            {targetProgress !== null && (
-              <div className="mt-2 max-w-xs mx-auto">
-                <div className="flex justify-between text-[10px] text-white/70 mb-1">
-                  <span>تحقيق الهدف</span>
-                  <span className="font-bold">{targetProgress.toFixed(0)}%</span>
-                </div>
-                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white rounded-full" style={{ width: `${targetProgress}%` }} />
-                </div>
+        <div className="bg-[#0a3d6e] border-r-4 border-[#c4a052] p-4 text-white shrink-0">
+          <p className="text-white/70 text-xs font-medium text-center mb-1 tracking-wide">الإجمالي</p>
+          <p className="text-4xl font-bold tracking-tight text-center">{formatNumber(data.total)}</p>
+          {targetProgress !== null && (
+            <div className="mt-2 max-w-xs mx-auto">
+              <div className="flex justify-between text-[10px] text-white/70 mb-1">
+                <span>نسبة تحقيق الهدف</span>
+                <span className="font-bold">{targetProgress.toFixed(0)}%</span>
               </div>
-            )}
-          </div>
+              <div className="h-1.5 bg-white/20 overflow-hidden">
+                <div className="h-full bg-[#c4a052]" style={{ width: `${targetProgress}%` }} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* الفترة المحددة */}
-        <div className="bg-white rounded-xl p-3 shadow-sm border-2 shrink-0" style={{ borderColor: periodMeta.color }}>
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <CalendarRange className="w-4 h-4" style={{ color: periodMeta.color }} />
-              <span className="text-xs font-bold text-slate-600">الفترة — {periodMeta.label}</span>
-            </div>
-            <p className="text-3xl font-bold text-slate-900 tracking-tight">{formatNumber(data.periodValue)}</p>
-            <div className="flex items-center justify-center gap-3 mt-1">
-              <span className="text-xs text-slate-400">{periodShare.toFixed(1)}% من الإجمالي</span>
-              <div className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                {isPositive ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-                <span>{isPositive ? '+' : ''}{growth.toFixed(1)}%</span>
-              </div>
-            </div>
+        <div className="bg-white border border-slate-300 border-r-4 border-r-[#00635b] p-3 shrink-0">
+          <p className="text-xs font-bold text-[#0a3d6e] text-center mb-1">
+            الفترة المحددة — {periodMeta.label}
+          </p>
+          <p className="text-3xl font-bold text-[#1a2332] tracking-tight text-center">{formatNumber(data.periodValue)}</p>
+          <div className="flex items-center justify-center gap-3 mt-1.5">
+            <span className="text-xs text-slate-500">{periodShare.toFixed(1)}% من الإجمالي</span>
+            <span className={`text-xs font-bold px-2 py-0.5 ${isPositive ? 'bg-[#e8f5e9] text-[#00635b]' : 'bg-red-50 text-red-700'}`}>
+              {isPositive ? '▲' : '▼'} {isPositive ? '+' : ''}{growth.toFixed(1)}%
+            </span>
           </div>
         </div>
 
-        {/* جدول مضغوط */}
-        <div className="bg-white rounded-lg shadow-sm border border-slate-100 px-3 py-1 shrink-0">
+        {/* جدول */}
+        <div className="bg-white border border-slate-300 shrink-0">
+          <div className="bg-[#f8fafc] border-b border-slate-300 px-3 py-1.5">
+            <p className="text-[10px] font-bold text-[#0a3d6e] text-center">تفاصيل المؤشر</p>
+          </div>
           <table className="w-full text-xs">
             <tbody>
               {tableRows.map((row) => (
-                <tr key={row.label} className={`border-b border-slate-50 last:border-0 ${row.highlight ? 'bg-slate-50/60' : ''}`}>
-                  <td className="py-2 pr-1">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
-                      <span className="font-semibold text-slate-800">{row.label}</span>
-                    </div>
-                  </td>
-                  <td className="py-2 text-left font-bold text-slate-800 tabular-nums">{formatNumber(row.value)}</td>
+                <tr key={row.label} className={`border-b border-slate-200 last:border-0 ${row.highlight ? 'bg-[#f0f7ff]' : ''}`}>
+                  <td className="py-2.5 pr-3 font-semibold text-[#1a2332]">{row.label}</td>
+                  <td className="py-2.5 pl-3 text-left font-bold text-[#0a3d6e] tabular-nums">{formatNumber(row.value)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* مخططات — تأخذ المساحة المتبقية */}
+        {/* مخططات */}
         <div className="flex-1 min-h-0 grid grid-rows-2 gap-2">
-          <div className="bg-white rounded-lg shadow-sm border border-slate-100 p-2 flex flex-col min-h-0">
-            <p className="text-xs font-bold text-slate-800 mb-1 text-center shrink-0">مقارنة الإجمالي والفترة</p>
+          <div className="bg-white border border-slate-300 p-2 flex flex-col min-h-0">
+            <p className="text-[10px] font-bold text-[#0a3d6e] mb-1 text-center border-b border-slate-200 pb-1 shrink-0">مقارنة الإجمالي والفترة</p>
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={compareData} barSize={40}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#64748b', fontSize: 9 }} axisLine={false} tickLine={false} width={36} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', direction: 'rtl' }} formatter={(v: number) => [formatNumber(v), '']} />
-                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                <BarChart data={compareData} barSize={36}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fill: '#475569', fontSize: 10, fontWeight: 600 }} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
+                  <YAxis tick={{ fill: '#64748b', fontSize: 9 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                  <Tooltip contentStyle={{ borderRadius: 0, border: '1px solid #cbd5e1', direction: 'rtl', fontSize: 11 }} formatter={(v: number) => [formatNumber(v), '']} />
+                  <Bar dataKey="value" radius={0}>
                     {compareData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                   </Bar>
                 </BarChart>
@@ -137,25 +126,16 @@ export function PowerBIPage({ data, mode = 'desktop' }: PowerBIPageProps) {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm border border-slate-100 p-2 flex flex-col min-h-0">
-            <div className="flex items-center justify-center gap-1.5 mb-1 shrink-0">
-              <Clock className="w-3.5 h-3.5 text-slate-400" />
-              <p className="text-xs font-bold text-slate-800">توجه {periodMeta.label}</p>
-            </div>
+          <div className="bg-white border border-slate-300 p-2 flex flex-col min-h-0">
+            <p className="text-[10px] font-bold text-[#0a3d6e] mb-1 text-center border-b border-slate-200 pb-1 shrink-0">توجه {periodMeta.label}</p>
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trendData}>
-                  <defs>
-                    <linearGradient id={`trend-s-${data.id}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor={periodMeta.color} stopOpacity={0.3} />
-                      <stop offset="95%" stopColor={periodMeta.color} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fill: '#64748b', fontSize: 9 }} axisLine={false} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                  <XAxis dataKey="label" tick={{ fill: '#64748b', fontSize: 9 }} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
                   <YAxis hide />
-                  <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', direction: 'rtl' }} formatter={(v: number) => [formatNumber(v), '']} />
-                  <Area type="monotone" dataKey="value" stroke={periodMeta.color} strokeWidth={2} fill={`url(#trend-s-${data.id})`} dot={{ fill: periodMeta.color, r: 2, strokeWidth: 0 }} />
+                  <Tooltip contentStyle={{ borderRadius: 0, border: '1px solid #cbd5e1', direction: 'rtl', fontSize: 11 }} formatter={(v: number) => [formatNumber(v), '']} />
+                  <Area type="monotone" dataKey="value" stroke="#0a3d6e" strokeWidth={2} fill="#0a3d6e22" dot={false} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

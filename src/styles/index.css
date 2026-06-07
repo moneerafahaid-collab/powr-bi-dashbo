@@ -9,4 +9,13 @@ body,
   width: 100%;
   overflow: hidden;
   margin: 0;
+  padding: 0;
+}
+
+html.signage-mode,
+html.signage-mode body,
+html.signage-mode #root {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
 }
