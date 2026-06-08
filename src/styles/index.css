@@ -1,4 +1,5 @@
 @import './fonts.css';
+@import './dga-tokens.css';
 @import './tailwind.css';
 @import './theme.css';
 
@@ -15,6 +16,14 @@ body,
 html.signage-mode,
 html.signage-mode body,
 html.signage-mode #root {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+}
+
+html.mobile-mode,
+html.mobile-mode body,
+html.mobile-mode #root {
   height: 100dvh;
   width: 100dvw;
   overflow: hidden;

@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 
-/** شاشة طولية (مثل 3م × 1م) — بدون شريط جانبي */
-export type DisplayMode = 'signage' | 'desktop';
+/** mobile = جوال | signage = شاشة عرض طولية | desktop = سطح مكتب */
+export type DisplayMode = 'mobile' | 'signage' | 'desktop';
+
+const MOBILE_MAX = 768;
 
 function getDisplayMode(): DisplayMode {
-  const { innerWidth, innerHeight } = window;
-  // طولي: الارتفاع أكبر من العرض (شاشة العرض الكبيرة)
-  if (innerHeight > innerWidth) return 'signage';
-  // مستطيل طولي ضيق حتى لو landscape بصرياً
-  if (innerWidth / innerHeight < 0.85) return 'signage';
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  if (w <= MOBILE_MAX) return 'mobile';
+  if (h > w || w / h < 0.85) return 'signage';
   return 'desktop';
 }
 
@@ -26,4 +28,16 @@ export function useDisplayMode(): DisplayMode {
   }, []);
 
   return mode;
+}
+
+export function isMobileMode(mode: DisplayMode) {
+  return mode === 'mobile';
+}
+
+export function isSignageMode(mode: DisplayMode) {
+  return mode === 'signage';
+}
+
+export function isCompactView(mode: DisplayMode) {
+  return mode === 'mobile' || mode === 'signage';
 }

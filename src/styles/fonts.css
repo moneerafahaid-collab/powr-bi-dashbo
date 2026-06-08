@@ -2,5 +2,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
 
 * {
-  font-family: 'IBM Plex Sans Arabic', 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif;
 }

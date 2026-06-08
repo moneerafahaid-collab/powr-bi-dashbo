@@ -12,9 +12,9 @@ export interface SimpleMetrics {
 }
 
 export const PERIOD_META: Record<PeriodType, { label: string; short: string; sub: string; color: string }> = {
-  '1month': { label: 'شهر', short: 'شهر', sub: 'الشهر الحالي', color: '#7c3aed' },
-  '3months': { label: '3 أشهر', short: '3ش', sub: 'الربع الحالي', color: '#0284c7' },
-  '6months': { label: '6 أشهر', short: '6ش', sub: 'نصف السنة', color: '#059669' }
+  '1month': { label: 'شهر', short: 'شهر', sub: 'الشهر الحالي', color: '#1570EF' },
+  '3months': { label: '3 أشهر', short: '3ش', sub: 'الربع الحالي', color: '#1B8354' },
+  '6months': { label: '6 أشهر', short: '6ش', sub: 'نصف السنة', color: '#175CD3' }
 };
 
 export const pagesData: SimpleMetrics[] = [

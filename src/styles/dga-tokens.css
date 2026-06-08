@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+/* DGA Platform Code — https://design.dga.gov.sa/ */
+:root {
+  --dga-sa-600: #1B8354;
+  --dga-sa-700: #166A45;
+  --dga-sa-950: #092A1E;
+  --dga-sa-100: #DFF6E7;
+  --dga-sa-50: #F3FCF6;
+
+  --dga-info-950: #102A56;
+  --dga-info-900: #194185;
+  --dga-info-800: #1849A9;
+  --dga-info-700: #175CD3;
+  --dga-info-600: #1570EF;
+  --dga-info-500: #2E90FA;
+  --dga-info-100: #D1E9FF;
+  --dga-info-50: #EFF8FF;
+
+  --dga-gray-950: #0D121C;
+  --dga-gray-900: #111927;
+  --dga-gray-800: #1F2A37;
+  --dga-gray-700: #384250;
+  --dga-gray-500: #6C737F;
+  --dga-gray-400: #9DA4AE;
+  --dga-gray-300: #D2D6DB;
+  --dga-gray-200: #E5E7EB;
+  --dga-gray-100: #F3F4F6;
+  --dga-gray-50: #F9FAFB;
+
+  --dga-gold-500: #F5BD02;
+  --dga-success-600: #079455;
+  --dga-error-600: #D92D20;
+
+  --dga-header-gradient: linear-gradient(270deg, var(--dga-info-950) 0%, var(--dga-info-800) 45%, var(--dga-info-600) 100%);
+  --dga-kpi-gradient: linear-gradient(180deg, var(--dga-info-900) 0%, var(--dga-info-700) 100%);
+
+  --background: var(--dga-gray-50);
+  --foreground: var(--dga-gray-900);
+  --primary: var(--dga-sa-600);
+  --primary-foreground: #ffffff;
+  --border: var(--dga-gray-300);
+  --chart-1: var(--dga-info-700);
+  --chart-2: var(--dga-sa-600);
+  --chart-3: var(--dga-info-500);
+}
+
+.dga-card {
+  background: #ffffff;
+  border: 1px solid var(--dga-gray-300);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(16, 42, 86, 0.08);
+}
+
+.dga-widget {
+  background: #ffffff;
+  border: 1px solid var(--dga-gray-300);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(16, 42, 86, 0.07);
+}
+
+.dga-widget-stat {
+  background: var(--stat-bg, #fff);
+  border: 1px solid var(--dga-gray-200);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(16, 42, 86, 0.05);
+}
+
+.stat-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--stat-accent) 12%, white);
+  color: var(--stat-accent);
+}
+
+.stat-icon-box-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.dashboard-shell {
+  background: var(--dga-gray-100);
+}
+
+/* شاشة العرض — 3 صفوف: KPI | تحليل | اتجاه (متساويان) */
+.signage-layout {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  padding: 6px;
+  background: var(--dga-gray-100);
+}
+
+.signage-panel {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.signage-charts-row {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 6px;
+}
+
+.signage-chart-slot {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  background: #fafbfc;
+  border: 1px solid var(--dga-gray-200);
+}
+
+.signage-chart-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* جوال — تمرير عمودي، كروت مكدّسة */
+.mobile-layout {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  background: var(--dga-gray-100);
+}
+
+.mobile-section {
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.mobile-gauge-box {
+  min-height: 148px;
+}
+
+.mobile-donut-box {
+  min-height: 130px;
+}
+
+.mobile-trend-box {
+  min-height: 168px;
+}
+
+.mobile-kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.dga-card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--dga-gray-200);
+  background: var(--dga-gray-25, #FCFCFD);
+}
+
+.dga-kpi-card {
+  background: var(--dga-kpi-gradient);
+  border-radius: 8px;
+  border-right: 4px solid var(--dga-sa-600);
+  color: #fff;
+}
+
+.dga-kpi-card-alt {
+  background: #ffffff;
+  border: 1px solid var(--dga-gray-300);
+  border-right: 4px solid var(--dga-sa-600);
+  border-radius: 8px;
+}
+
+.gauge-progress-fill {
+  width: var(--gauge-pct, 0%);
+  transition: width 0.7s ease;
+}
+
+.compare-bar-fill {
+  width: var(--bar-pct, 0%);
+  transition: width 0.5s ease;
+}
+
+.stat-chip-label {
+  color: var(--stat-accent, var(--dga-gray-500));
+}

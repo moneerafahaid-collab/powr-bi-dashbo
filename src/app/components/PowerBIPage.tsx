@@ -1,5 +1,12 @@
+import type { CSSProperties } from 'react';
 import { SimpleMetrics, PERIOD_META } from '../data/simpleData';
 import type { DisplayMode } from './ui/use-display-mode';
+import { DGA } from '../styles/dga';
+import { DashboardWidget } from './DashboardWidget';
+import { StatWidgets } from './StatWidgets';
+import { KPIGaugeDashboard } from './KPIGaugeDashboard';
+import { DonutWidget } from './DonutWidget';
+import { CompareStrip } from './CompareStrip';
 import {
   BarChart,
   Bar,
@@ -12,14 +19,6 @@ import {
   ResponsiveContainer,
   Cell
 } from 'recharts';
-import {
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Sigma,
-  CalendarRange,
-  Clock
-} from 'lucide-react';
 
 interface PowerBIPageProps {
   data: SimpleMetrics;
@@ -30,290 +29,264 @@ function formatNumber(n: number) {
   return n.toLocaleString('ar-SA');
 }
 
-export function PowerBIPage({ data, mode = 'desktop' }: PowerBIPageProps) {
-  const isSignage = mode === 'signage';
+const tooltipStyle = {
+  backgroundColor: '#fff',
+  border: `1px solid ${DGA.gray[300]}`,
+  borderRadius: 8,
+  direction: 'rtl' as const,
+  fontSize: 11,
+  fontFamily: 'IBM Plex Sans Arabic, sans-serif'
+};
+
+/** جوال — تمرير عمودي، كل قسم بمقاس واضح */
+function MobileDashboard({ data }: { data: SimpleMetrics }) {
   const periodMeta = PERIOD_META[data.period];
   const growth = data.growth ?? 0;
-  const isPositive = growth >= 0;
-  const periodShare = data.total > 0 ? (data.periodValue / data.total) * 100 : 0;
-  const targetProgress = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
+  const targetPct = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
 
-  const compareData = [
-    { name: 'الإجمالي', value: data.total, fill: '#0a3d6e' },
-    { name: periodMeta.label, value: data.periodValue, fill: '#00635b' }
-  ];
-
-  const trendPoints = 6;
-  const trendData = Array.from({ length: trendPoints }, (_, i) => ({
+  const trendData = Array.from({ length: 6 }, (_, i) => ({
     label: `ف${i + 1}`,
-    value: Math.round(data.periodValue * (0.78 + (i / (trendPoints - 1)) * 0.22))
+    value: Math.round(data.periodValue * (0.78 + (i / 5) * 0.22))
   }));
 
-  const tableRows = [
-    { label: 'الإجمالي', sub: 'إجمالي المؤشر', value: data.total, color: '#0d47a1', highlight: false },
-    { label: periodMeta.label, sub: periodMeta.sub, value: data.periodValue, color: periodMeta.color, highlight: true },
-    ...(data.target ? [{ label: 'المستهدف', sub: 'الهدف المحدد', value: data.target, color: '#f59e0b', highlight: false }] : [])
-  ];
+  return (
+    <div className="mobile-layout">
+      <StatWidgets data={data} mobile />
 
-  /* ── شاشة العرض — تصميم حكومي رسمي ── */
-  if (isSignage) {
-    return (
-      <div className="flex flex-col h-full gap-2 px-3 py-2 overflow-hidden bg-[#e8ecf1]">
-        {/* الإجمالي */}
-        <div className="bg-[#0a3d6e] border-r-4 border-[#c4a052] p-4 text-white shrink-0">
-          <p className="text-white/70 text-xs font-medium text-center mb-1 tracking-wide">الإجمالي</p>
-          <p className="text-4xl font-bold tracking-tight text-center">{formatNumber(data.total)}</p>
-          {targetProgress !== null && (
-            <div className="mt-2 max-w-xs mx-auto">
-              <div className="flex justify-between text-[10px] text-white/70 mb-1">
-                <span>نسبة تحقيق الهدف</span>
-                <span className="font-bold">{targetProgress.toFixed(0)}%</span>
-              </div>
-              <div className="h-1.5 bg-white/20 overflow-hidden">
-                <div className="h-full bg-[#c4a052]" style={{ width: `${targetProgress}%` }} />
-              </div>
-            </div>
+      <div className="mobile-section dga-widget">
+        <div className="h-0.5 shrink-0 bg-[#1B8354]" />
+        <div className="shrink-0 px-3 py-1.5 border-b border-[#E5E7EB] flex items-center justify-between">
+          <p className="text-[11px] font-semibold text-[#384250]">تحليل المؤشر</p>
+          {targetPct !== null && (
+            <span className="text-[9px] font-semibold text-[#1B8354] bg-[#F3FCF6] px-2 py-0.5 rounded">
+              {targetPct.toFixed(0)}% من الهدف
+            </span>
           )}
         </div>
 
-        {/* الفترة المحددة */}
-        <div className="bg-white border border-slate-300 border-r-4 border-r-[#00635b] p-3 shrink-0">
-          <p className="text-xs font-bold text-[#0a3d6e] text-center mb-1">
-            الفترة المحددة — {periodMeta.label}
-          </p>
-          <p className="text-3xl font-bold text-[#1a2332] tracking-tight text-center">{formatNumber(data.periodValue)}</p>
-          <div className="flex items-center justify-center gap-3 mt-1.5">
-            <span className="text-xs text-slate-500">{periodShare.toFixed(1)}% من الإجمالي</span>
-            <span className={`text-xs font-bold px-2 py-0.5 ${isPositive ? 'bg-[#e8f5e9] text-[#00635b]' : 'bg-red-50 text-red-700'}`}>
-              {isPositive ? '▲' : '▼'} {isPositive ? '+' : ''}{growth.toFixed(1)}%
-            </span>
-          </div>
+        <div className="mobile-gauge-box p-2 border-b border-[#E5E7EB]">
+          <KPIGaugeDashboard
+            total={data.total}
+            periodValue={data.periodValue}
+            periodLabel={periodMeta.label}
+            target={data.target}
+            growth={growth}
+            compact
+            embedded
+          />
         </div>
 
-        {/* جدول */}
-        <div className="bg-white border border-slate-300 shrink-0">
-          <div className="bg-[#f8fafc] border-b border-slate-300 px-3 py-1.5">
-            <p className="text-[10px] font-bold text-[#0a3d6e] text-center">تفاصيل المؤشر</p>
-          </div>
-          <table className="w-full text-xs">
-            <tbody>
-              {tableRows.map((row) => (
-                <tr key={row.label} className={`border-b border-slate-200 last:border-0 ${row.highlight ? 'bg-[#f0f7ff]' : ''}`}>
-                  <td className="py-2.5 pr-3 font-semibold text-[#1a2332]">{row.label}</td>
-                  <td className="py-2.5 pl-3 text-left font-bold text-[#0a3d6e] tabular-nums">{formatNumber(row.value)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mobile-donut-box p-2 border-b border-[#E5E7EB]">
+          <p className="text-[10px] font-semibold text-[#384250] text-center mb-1">توزيع {periodMeta.label}</p>
+          <DonutWidget total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} compact />
         </div>
 
-        {/* مخططات */}
-        <div className="flex-1 min-h-0 grid grid-rows-2 gap-2">
-          <div className="bg-white border border-slate-300 p-2 flex flex-col min-h-0">
-            <p className="text-[10px] font-bold text-[#0a3d6e] mb-1 text-center border-b border-slate-200 pb-1 shrink-0">مقارنة الإجمالي والفترة</p>
-            <div className="flex-1 min-h-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={compareData} barSize={36}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: '#475569', fontSize: 10, fontWeight: 600 }} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
-                  <YAxis tick={{ fill: '#64748b', fontSize: 9 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                  <Tooltip contentStyle={{ borderRadius: 0, border: '1px solid #cbd5e1', direction: 'rtl', fontSize: 11 }} formatter={(v: number) => [formatNumber(v), '']} />
-                  <Bar dataKey="value" radius={0}>
-                    {compareData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="bg-white border border-slate-300 p-2 flex flex-col min-h-0">
-            <p className="text-[10px] font-bold text-[#0a3d6e] mb-1 text-center border-b border-slate-200 pb-1 shrink-0">توجه {periodMeta.label}</p>
-            <div className="flex-1 min-h-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trendData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                  <XAxis dataKey="label" tick={{ fill: '#64748b', fontSize: 9 }} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
-                  <YAxis hide />
-                  <Tooltip contentStyle={{ borderRadius: 0, border: '1px solid #cbd5e1', direction: 'rtl', fontSize: 11 }} formatter={(v: number) => [formatNumber(v), '']} />
-                  <Area type="monotone" dataKey="value" stroke="#0a3d6e" strokeWidth={2} fill="#0a3d6e22" dot={false} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+        <div className="shrink-0 px-3 py-2 bg-[#FCFCFD]">
+          <CompareStrip total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} display />
         </div>
       </div>
-    );
+
+      <div className="mobile-section dga-widget mobile-trend-box flex flex-col">
+        <div className="h-0.5 shrink-0 bg-[#175CD3]" />
+        <div className="shrink-0 px-3 py-1.5 border-b border-[#E5E7EB]">
+          <p className="text-[11px] font-semibold text-[#384250]">اتجاه الأداء — {periodMeta.label}</p>
+        </div>
+        <div className="flex-1 min-h-[140px] p-2">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trendData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id={`trend-m-${data.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
+              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+              <YAxis tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={false} tickLine={false} width={28} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
+              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-m-${data.id})`} dot={false} activeDot={{ r: 4 }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** شاشة العرض — شبكة ثابتة بدون تداخل */
+function SignageDashboard({ data }: { data: SimpleMetrics }) {
+  const periodMeta = PERIOD_META[data.period];
+  const growth = data.growth ?? 0;
+  const targetPct = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
+
+  const trendData = Array.from({ length: 6 }, (_, i) => ({
+    label: `ف${i + 1}`,
+    value: Math.round(data.periodValue * (0.78 + (i / 5) * 0.22))
+  }));
+
+  return (
+    <div className="signage-layout">
+      {/* صف 1: KPI */}
+      <StatWidgets data={data} signage />
+
+      {/* صف 2: تحليل المؤشر */}
+      <div className="signage-panel dga-widget">
+        <div className="h-0.5 shrink-0 bg-[#1B8354]" />
+        <div className="shrink-0 px-2 py-1 border-b border-[#E5E7EB] flex items-center justify-between">
+          <p className="text-[10px] font-semibold text-[#384250]">تحليل المؤشر</p>
+          {targetPct !== null && (
+            <span className="text-[8px] font-semibold text-[#1B8354] bg-[#F3FCF6] px-1.5 py-px rounded">
+              {targetPct.toFixed(0)}% من الهدف
+            </span>
+          )}
+        </div>
+
+        <div className="signage-charts-row">
+          <div className="signage-chart-slot">
+            <div className="signage-chart-body">
+              <KPIGaugeDashboard
+                total={data.total}
+                periodValue={data.periodValue}
+                periodLabel={periodMeta.label}
+                target={data.target}
+                growth={growth}
+                compact
+                embedded
+              />
+            </div>
+          </div>
+          <div className="signage-chart-slot p-1">
+            <p className="text-[8px] font-semibold text-[#384250] text-center shrink-0">توزيع {periodMeta.label}</p>
+            <div className="signage-chart-body">
+              <DonutWidget total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} compact />
+            </div>
+          </div>
+        </div>
+
+        <div className="shrink-0 px-2 pb-1.5 pt-1 border-t border-[#E5E7EB] bg-[#FCFCFD]">
+          <CompareStrip total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} display />
+        </div>
+      </div>
+
+      {/* صف 3: اتجاه الأداء — نفس ارتفاع التحليل */}
+      <DashboardWidget title={`اتجاه الأداء — ${periodMeta.label}`} accent="blue" dense className="signage-panel">
+        <div className="flex-1 min-h-0 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trendData} margin={{ top: 2, right: 4, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.3} />
+                  <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
+              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 8 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+              <YAxis tick={{ fill: DGA.gray[500], fontSize: 8 }} axisLine={false} tickLine={false} width={24} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
+              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 3 }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </DashboardWidget>
+    </div>
+  );
+}
+
+export function PowerBIPage({ data, mode = 'desktop' }: PowerBIPageProps) {
+  if (mode === 'mobile') {
+    return <MobileDashboard data={data} />;
   }
 
-  /* ── تخطيط الكمبيوتر (أفقي) ── */
+  if (mode === 'signage') {
+    return <SignageDashboard data={data} />;
+  }
+
+  const periodMeta = PERIOD_META[data.period];
+  const growth = data.growth ?? 0;
+  const targetPct = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
+
+  const compareData = [
+    { name: 'الإجمالي', value: data.total, fill: DGA.info[700] },
+    { name: periodMeta.label, value: data.periodValue, fill: DGA.sa[600] }
+  ];
+
+  const trendData = Array.from({ length: 6 }, (_, i) => ({
+    label: `ف${i + 1}`,
+    value: Math.round(data.periodValue * (0.78 + (i / 5) * 0.22))
+  }));
+
   return (
-    <div className="flex flex-col h-full gap-4 p-5 overflow-hidden">
-      <div className="grid grid-cols-12 gap-4 shrink-0">
-        <div className="col-span-5 bg-gradient-to-bl from-[#0d47a1] to-[#1565c0] rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
-          <div className="absolute -left-8 -bottom-8 w-40 h-40 bg-white/5 rounded-full" />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="p-2 bg-white/15 rounded-lg"><Sigma className="w-5 h-5" /></div>
-              <span className="text-white/80 text-sm font-medium">الإجمالي</span>
-            </div>
-            <p className="text-5xl font-bold tracking-tight mb-2">{formatNumber(data.total)}</p>
-            <p className="text-white/60 text-sm">إجمالي {data.pageName}</p>
-            {targetProgress !== null && (
-              <div className="mt-5">
-                <div className="flex justify-between text-xs text-white/70 mb-1.5">
-                  <span>نسبة تحقيق الهدف</span>
-                  <span className="font-bold text-white">{targetProgress.toFixed(0)}%</span>
-                </div>
-                <div className="h-2 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white rounded-full transition-all duration-700" style={{ width: `${targetProgress}%` }} />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+    <div className="dashboard-shell h-full min-h-0 overflow-hidden flex flex-col p-3 gap-2.5">
+      <StatWidgets data={data} />
 
-        <div className="col-span-4 bg-white rounded-2xl p-6 shadow-sm border-2 relative overflow-hidden" style={{ borderColor: periodMeta.color }}>
-          <div className="absolute top-0 left-0 w-full h-1" style={{ backgroundColor: periodMeta.color }} />
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg" style={{ backgroundColor: `${periodMeta.color}18` }}>
-                <CalendarRange className="w-5 h-5" style={{ color: periodMeta.color }} />
-              </div>
-              <div>
-                <p className="text-slate-500 text-xs">الفترة المحددة</p>
-                <p className="font-bold text-slate-800">{periodMeta.label}</p>
-              </div>
-            </div>
-            <span className="text-xs font-bold px-3 py-1 rounded-full text-white" style={{ backgroundColor: periodMeta.color }}>{periodMeta.sub}</span>
-          </div>
-          <p className="text-4xl font-bold text-slate-900 tracking-tight mb-2">{formatNumber(data.periodValue)}</p>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-400">{periodShare.toFixed(1)}% من الإجمالي</span>
-            <div className={`flex items-center gap-1 text-sm font-semibold px-2.5 py-1 rounded-full ${isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-              {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-              <span>{isPositive ? '+' : ''}{growth.toFixed(1)}%</span>
-            </div>
-          </div>
-        </div>
+      <div className="flex-1 min-h-0 grid grid-cols-12 grid-rows-[1fr_minmax(0,1fr)] gap-2.5 overflow-hidden">
+        <DashboardWidget title={data.target ? 'تحقيق الهدف' : 'نسبة الإنجاز'} accent="green" noPadding className="col-span-4 min-h-0">
+          <KPIGaugeDashboard
+            total={data.total}
+            periodValue={data.periodValue}
+            periodLabel={periodMeta.label}
+            target={data.target}
+            growth={growth}
+            embedded
+          />
+        </DashboardWidget>
 
-        <div className="col-span-3 bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col justify-between">
-          <div className="flex items-center gap-2 mb-3">
-            <Target className="w-4 h-4 text-slate-400" />
-            <p className="text-sm font-bold text-slate-700">ملخص المؤشر</p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center py-2 border-b border-slate-50">
-              <span className="text-xs text-slate-400">الفترة</span>
-              <span className="text-sm font-bold" style={{ color: periodMeta.color }}>{periodMeta.label}</span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-slate-50">
-              <span className="text-xs text-slate-400">الإجمالي</span>
-              <span className="text-sm font-bold text-[#0d47a1]">{formatNumber(data.total)}</span>
-            </div>
-            <div className="flex justify-between items-center py-2 border-b border-slate-50">
-              <span className="text-xs text-slate-400">قيمة الفترة</span>
-              <span className="text-sm font-bold text-slate-800">{formatNumber(data.periodValue)}</span>
-            </div>
-            {data.target && (
-              <div className="flex justify-between items-center py-2">
-                <span className="text-xs text-slate-400">المستهدف</span>
-                <span className="text-sm font-bold text-amber-600">{formatNumber(data.target)}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-12 gap-4 flex-1 min-h-0">
-        <div className="col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col min-h-0">
-          <div className="mb-4 shrink-0">
-            <h3 className="text-base font-bold text-slate-800">مقارنة الإجمالي والفترة</h3>
-            <p className="text-xs text-slate-400 mt-0.5">الإجمالي مقابل {periodMeta.label}</p>
-          </div>
-          <div className="flex-1 min-h-0">
+        <div className="col-span-4 min-h-0 grid grid-rows-2 gap-2.5">
+          <DashboardWidget title={`توزيع ${periodMeta.label}`} accent="blue" className="min-h-0">
+            <DonutWidget total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} />
+          </DashboardWidget>
+          <DashboardWidget title="مقارنة سريعة" accent="gold" className="min-h-0">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={compareData} barSize={72}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-                <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', direction: 'rtl', fontSize: 13 }} formatter={(value: number) => [formatNumber(value), 'القيمة']} />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+              <BarChart data={compareData} layout="vertical" margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} horizontal={false} />
+                <XAxis type="number" hide />
+                <YAxis type="category" dataKey="name" width={52} tick={{ fill: DGA.gray[700], fontSize: 10, fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={14}>
                   {compareData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </DashboardWidget>
         </div>
 
-        <div className="col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col min-h-0">
-          <div className="mb-4 shrink-0">
-            <h3 className="text-base font-bold text-slate-800">تفاصيل المؤشر</h3>
-            <p className="text-xs text-slate-400 mt-0.5">الإجمالي والفترة المحددة</p>
+        <DashboardWidget title="ملخص الأرقام" accent="neutral" className="col-span-4 min-h-0">
+          <div className="flex flex-col justify-center h-full gap-3">
+            <CompareStrip total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} />
+            {targetPct !== null && (
+              <div>
+                <div className="flex justify-between text-[10px] text-[#6C737F] mb-1">
+                  <span>تقدم الهدف</span>
+                  <span className="font-semibold text-[#1B8354]">{targetPct.toFixed(1)}%</span>
+                </div>
+                <div className="h-2 bg-[#E5E7EB] rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-l from-[#1B8354] to-[#175CD3] gauge-progress-fill"
+                    style={{ '--gauge-pct': `${targetPct}%` } as CSSProperties}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex-1 overflow-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-100">
-                  <th className="text-right py-2.5 text-slate-500 font-medium text-xs">البند</th>
-                  <th className="text-left py-2.5 text-slate-500 font-medium text-xs">القيمة</th>
-                  <th className="text-left py-2.5 text-slate-500 font-medium text-xs">النسبة</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableRows.map((row) => (
-                  <tr key={row.label} className={`border-b border-slate-50 transition-colors ${row.highlight ? 'bg-slate-50/80' : 'hover:bg-slate-50/50'}`}>
-                    <td className="py-3.5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
-                        <div>
-                          <p className="font-semibold text-slate-800 text-sm">{row.label}</p>
-                          <p className="text-xs text-slate-400">{row.sub}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3.5 text-left font-bold text-slate-800 tabular-nums">{formatNumber(row.value)}</td>
-                    <td className="py-3.5 text-left">
-                      {row.label === 'الإجمالي' ? (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700">100%</span>
-                      ) : row.label === 'المستهدف' && data.target ? (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-600">{((data.total / data.target) * 100).toFixed(1)}%</span>
-                      ) : (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">{periodShare.toFixed(1)}%</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        </DashboardWidget>
 
-        <div className="col-span-3 bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col min-h-0">
-          <div className="flex items-center justify-between mb-4 shrink-0">
-            <div>
-              <h3 className="text-base font-bold text-slate-800">توجه {periodMeta.label}</h3>
-              <p className="text-xs text-slate-400 mt-0.5">آخر {trendPoints} فترات</p>
-            </div>
-            <Clock className="w-4 h-4 text-slate-400" />
-          </div>
-          <div className="flex-1 min-h-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trendData}>
-                <defs>
-                  <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={periodMeta.color} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={periodMeta.color} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="label" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '10px', direction: 'rtl', fontSize: 12 }} formatter={(value: number) => [formatNumber(value), periodMeta.label]} />
-                <Area type="monotone" dataKey="value" stroke={periodMeta.color} strokeWidth={2.5} fill={`url(#trend-${data.id})`} dot={{ fill: periodMeta.color, r: 3, strokeWidth: 0 }} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <DashboardWidget title={`اتجاه الأداء — ${periodMeta.label}`} accent="blue" className="col-span-12 min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trendData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id={`trend-d-${data.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.35} />
+                  <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
+              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 10 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+              <YAxis tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
+              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-d-${data.id})`} dot={{ r: 2, fill: DGA.info[700], strokeWidth: 0 }} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </DashboardWidget>
       </div>
     </div>
   );
