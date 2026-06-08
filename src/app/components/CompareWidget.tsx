@@ -1,0 +1,91 @@
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { DGA } from '../styles/dga';
+import type { CSSProperties } from 'react';
+import { WidgetCircleLayout } from './WidgetCircleLayout';
+import { CompareStrip } from './CompareStrip';
+
+interface CompareWidgetProps {
+  total: number;
+  periodValue: number;
+  periodLabel: string;
+  compact?: boolean;
+  horizontal?: boolean;
+}
+
+function formatNumber(n: number) {
+  return n.toLocaleString('ar-SA');
+}
+
+function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidgetProps) {
+  const remainder = Math.max(total - periodValue, 0);
+  const pct = total > 0 ? ((periodValue / total) * 100).toFixed(0) : '0';
+  const slices = [
+    { name: periodLabel, value: periodValue, color: DGA.sa[600] },
+    { name: 'الباقي', value: remainder, color: DGA.gray[200] }
+  ];
+
+  return (
+    <div className="relative w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie data={slices} cx="50%" cy="50%" innerRadius="62%" outerRadius="88%" paddingAngle={1} dataKey="value" strokeWidth={0}>
+            {slices.map((s, i) => (
+              <Cell key={i} fill={s.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <span className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-base'}`}>{pct}%</span>
+        <span className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[8px]'}`}>مقارنة</span>
+      </div>
+    </div>
+  );
+}
+
+export function CompareWidget({ total, periodValue, periodLabel, compact = false, horizontal = false }: CompareWidgetProps) {
+  const diff = total - periodValue;
+  const ratio = total > 0 ? ((periodValue / total) * 100).toFixed(1) : '0';
+
+  if (!horizontal) {
+    return <CompareStrip total={total} periodValue={periodValue} periodLabel={periodLabel} compact={compact} />;
+  }
+
+  return (
+    <WidgetCircleLayout
+      compact={compact}
+      circle={<CompareRing total={total} periodValue={periodValue} periodLabel={periodLabel} compact={compact} />}
+    >
+      <p className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-base'}`}>{ratio}%</p>
+      <p className={`text-[#6C737F] ${compact ? 'text-[8px]' : 'text-[9px]'}`}>نسبة {periodLabel} من الإجمالي</p>
+      <div className={`space-y-0.5 ${compact ? 'mt-0.5' : 'mt-1'}`}>
+        <div className="flex justify-between text-[8px] text-[#6C737F]">
+          <span>{periodLabel}</span>
+          <span className="font-semibold text-[#1B8354] tabular-nums">{formatNumber(periodValue)}</span>
+        </div>
+        <div className="flex justify-between text-[8px] text-[#6C737F]">
+          <span>الفرق</span>
+          <span className="font-semibold text-[#175CD3] tabular-nums">{formatNumber(diff)}</span>
+        </div>
+      </div>
+      {!compact && (
+        <div className="space-y-1 mt-1 compare-widget-bars">
+          {[
+            { label: 'الإجمالي', value: total, color: DGA.info[700], track: DGA.info[50] },
+            { label: periodLabel, value: periodValue, color: DGA.sa[600], track: DGA.sa[50] }
+          ].map((row) => {
+            const barPct = (row.value / Math.max(total, periodValue, 1)) * 100;
+            return (
+              <div key={row.label} className="flex items-center gap-1.5 min-w-0">
+                <span className="shrink-0 text-[7px] font-semibold text-[#384250] w-10 text-right">{row.label}</span>
+                <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: row.track }}>
+                  <div className="h-full rounded-full compare-bar-fill" style={{ '--bar-pct': `${barPct}%`, backgroundColor: row.color } as CSSProperties} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </WidgetCircleLayout>
+  );
+}

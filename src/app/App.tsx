@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { PowerBIPage } from './components/PowerBIPage';
 import { pagesData, ROTATION_INTERVAL_MS, PERIOD_META } from './data/simpleData';
-import { useDisplayMode, isSignageMode, isCompactView, useSignageTall } from './components/ui/use-display-mode';
+import { useDisplayMode, isSignageMode, isCompactView, useSignageScaleEffect } from './components/ui/use-display-mode';
 import { useAutoFullscreen } from './components/ui/use-auto-fullscreen';
 import { HeaderBrand } from './components/HeaderBrand';
 import {
@@ -18,7 +18,7 @@ export default function App() {
   const isSignage = isSignageMode(displayMode);
   const isMobile = displayMode === 'mobile';
   const isCompact = isCompactView(displayMode);
-  const isTallSignage = useSignageTall() && isSignage;
+  useSignageScaleEffect(isSignage);
   useAutoFullscreen(isSignage);
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -30,12 +30,11 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('signage-mode', isSignage);
-    document.documentElement.classList.toggle('signage-tall', isTallSignage);
     document.documentElement.classList.toggle('mobile-mode', isMobile);
     return () => {
-      document.documentElement.classList.remove('signage-mode', 'signage-tall', 'mobile-mode');
+      document.documentElement.classList.remove('signage-mode', 'mobile-mode');
     };
-  }, [isSignage, isTallSignage, isMobile]);
+  }, [isSignage, isMobile]);
 
   useEffect(() => {
     const clock = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -86,11 +85,11 @@ export default function App() {
       {/* Header */}
       <header
         className={`shrink-0 border-b-[3px] border-[#1B8354] ${
-          isTallSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-4'
+          isSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-4'
         }`}
         style={{ background: 'var(--dga-header-gradient)' }}
       >
-        {isTallSignage ? (
+        {isSignage ? (
           <div className="signage-tall-header flex items-center gap-2 min-h-0">
             <HeaderBrand variant="signage-tall" />
             <div className="flex-1 min-w-0 text-center px-1">
@@ -246,10 +245,10 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isTallSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
+      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
         {isCompact ? (
           <div className="flex items-center gap-2">
-            {isTallSignage ? (
+            {isSignage ? (
               <span className="text-[8px] text-[#6C737F] shrink-0">أمانة حائل</span>
             ) : !isMobile ? (
               <span className="text-[10px] text-[#6C737F] shrink-0 hidden sm:inline">
@@ -272,7 +271,7 @@ export default function App() {
               <div className="h-full bg-[#1B8354] transition-all duration-1000 ease-linear rounded-full" style={{ width: isPaused ? '0%' : `${progress}%` }} />
             </div>
             <span className="text-[10px] font-semibold text-[#384250] tabular-nums shrink-0">
-              {isTallSignage
+              {isSignage
                 ? `${currentPage + 1}/${totalPages} · ${isPaused ? '—' : `${countdown}ث`}`
                 : isMobile
                   ? `${currentPage + 1}/${totalPages}${isPaused ? '' : ` · ${countdown}ث`}`

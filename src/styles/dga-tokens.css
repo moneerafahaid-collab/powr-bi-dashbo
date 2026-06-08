@@ -87,7 +87,20 @@
   background: var(--dga-gray-100);
 }
 
-/* شاشة العرض — 3 صفوف: KPI | تحليل | اتجاه */
+/* شاشة العرض — 50سم × 80سم (5:8) */
+html.signage-mode {
+  --signage-scale: 1;
+  --signage-vw: 1vw;
+  --signage-vh: 1vh;
+  --signage-gap: max(3px, calc(0.45 * var(--signage-vh)));
+  --signage-pad: max(3px, calc(0.45 * var(--signage-vh)));
+  --signage-circle: min(calc(72px * var(--signage-scale)), 20vw, 10.5vh);
+  --signage-font-xs: max(6px, calc(7px * var(--signage-scale)));
+  --signage-font-sm: max(7px, calc(8px * var(--signage-scale)));
+  --signage-font-md: max(9px, calc(10px * var(--signage-scale)));
+  --signage-font-lg: max(11px, calc(12px * var(--signage-scale)));
+}
+
 .signage-layout {
   display: grid;
   height: 100%;
@@ -99,50 +112,113 @@
   background: var(--dga-gray-100);
 }
 
-/* شاشة 50سم عرض × 80سم طول — نسبة 5:8 */
-html.signage-tall .signage-layout {
-  grid-template-rows: auto minmax(0, 1.12fr) minmax(0, 0.88fr);
-  gap: 4px;
-  padding: 4px;
+html.signage-mode .signage-layout {
+  grid-template-rows: minmax(0, auto) minmax(0, 1.58fr) minmax(0, 0.82fr);
+  gap: var(--signage-gap);
+  padding: var(--signage-pad);
 }
 
-html.signage-tall .signage-charts-row {
-  gap: 4px;
-  padding: 4px;
+html.signage-mode .signage-kpi-row {
+  max-height: min(12.5vh, calc(88px * var(--signage-scale)));
+  overflow: hidden;
 }
 
-html.signage-tall .signage-chart-slot {
+html.signage-mode .signage-charts-row {
+  gap: var(--signage-gap);
+  padding: var(--signage-pad);
+}
+
+html.signage-mode .signage-chart-slot {
   border-radius: 6px;
 }
 
-html.signage-tall .dga-widget-stat {
-  padding: 3px 4px !important;
+html.signage-mode .dga-widget-stat {
+  padding: max(2px, calc(3px * var(--signage-scale))) max(3px, calc(4px * var(--signage-scale))) !important;
 }
 
-html.signage-tall .signage-kpi-value {
-  font-size: 11px !important;
+html.signage-mode .signage-kpi-value {
+  font-size: var(--signage-font-lg) !important;
   line-height: 1.1;
 }
 
-html.signage-tall .signage-kpi-label {
-  font-size: 7px !important;
+html.signage-mode .signage-kpi-label {
+  font-size: var(--signage-font-xs) !important;
 }
 
-html.signage-tall .signage-kpi-sub {
-  font-size: 6px !important;
+html.signage-mode .signage-kpi-sub {
+  font-size: max(5px, calc(6px * var(--signage-scale))) !important;
 }
 
-html.signage-tall .stat-icon-box-sm {
-  width: 20px;
-  height: 20px;
+html.signage-mode .stat-icon-box-sm {
+  width: max(18px, calc(20px * var(--signage-scale)));
+  height: max(18px, calc(20px * var(--signage-scale)));
 }
 
-html.signage-tall .signage-chart-body svg {
-  max-height: 92px;
+html.signage-mode .signage-chart-body svg {
+  max-height: min(calc(92px * var(--signage-scale)), 11vh);
 }
 
-html.signage-tall footer .h-1\.5 {
-  height: 4px;
+html.signage-mode footer .h-1\.5 {
+  height: max(3px, calc(4px * var(--signage-scale)));
+}
+
+/* دوائر المؤشرات — تتناسب مع عرض 50سم */
+.signage-circle-slot.is-compact {
+  width: 72px;
+  height: 72px;
+}
+
+.signage-circle-slot.is-regular {
+  width: 100px;
+  height: 100px;
+}
+
+html.signage-mode .signage-circle-slot {
+  width: var(--signage-circle);
+  height: var(--signage-circle);
+}
+
+html.signage-mode .widget-circle-layout {
+  gap: max(2px, calc(4px * var(--signage-scale)));
+}
+
+html.signage-mode .widget-circle-content {
+  font-size: var(--signage-font-xs);
+  line-height: 1.25;
+}
+
+html.signage-mode .widget-circle-content .font-bold,
+html.signage-mode .widget-circle-content [class*='font-bold'] {
+  font-size: var(--signage-font-md);
+}
+
+html.signage-mode .signage-chart-slot > p {
+  font-size: var(--signage-font-sm) !important;
+  margin-bottom: max(1px, calc(2px * var(--signage-scale)));
+}
+
+html.signage-mode .signage-panel .dga-widget > div:nth-child(2) p {
+  font-size: var(--signage-font-sm) !important;
+}
+
+html.signage-mode header {
+  max-height: 11.5dvh;
+  overflow: hidden;
+}
+
+html.signage-mode footer {
+  max-height: 5.5dvh;
+  overflow: hidden;
+}
+
+html.signage-mode .signage-tall-header h2 {
+  font-size: var(--signage-font-md) !important;
+}
+
+html.signage-mode main {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .signage-panel {
@@ -160,6 +236,18 @@ html.signage-tall footer .h-1\.5 {
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   padding: 6px;
+}
+
+.signage-charts-row-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+}
+
+html.signage-mode .signage-charts-row-4 {
+  gap: max(2px, calc(3px * var(--signage-scale)));
+  padding: max(2px, calc(3px * var(--signage-scale)));
 }
 
 .signage-chart-slot {
