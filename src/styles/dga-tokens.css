@@ -468,6 +468,56 @@ html.signage-mode .signage-indicator-stack__legend {
   padding: 0 2px 2px;
 }
 
+/* توزيع: أسطورة يسار + مؤشر يمين */
+html.signage-mode .signage-donut-side.widget-circle-layout {
+  gap: 4px;
+  height: 100%;
+}
+
+html.signage-mode .signage-donut-side .signage-circle-slot {
+  width: min(50%, 12vh);
+  height: min(100%, 12vh);
+  max-width: 52%;
+  min-width: 0;
+  flex: 1 1 50%;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html.signage-mode .signage-donut-side .widget-circle-content {
+  flex: 1 1 48%;
+  justify-content: center;
+  height: 100%;
+}
+
+html.signage-mode .signage-legend-only {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(4px, 0.8vh, 8px);
+  width: 100%;
+  height: 100%;
+  padding: 2px 4px;
+}
+
+html.signage-mode .signage-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--signage-font-md);
+  font-weight: 700;
+  color: var(--signage-text-muted);
+  line-height: 1.25;
+}
+
+html.signage-mode .signage-legend-item--plain {
+  padding-right: calc(clamp(8px, 1.15vh, 11px) + 6px);
+  color: var(--signage-text);
+  font-weight: 800;
+}
+
 /* ── صف سفلي: اتجاه الأداء + مقارنة ── */
 .signage-bottom-row {
   display: grid;

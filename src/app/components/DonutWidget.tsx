@@ -79,25 +79,25 @@ export function DonutWidget({ total, periodValue, periodLabel, compact = false, 
 
   if (horizontal && compact) {
     return (
-      <div className="signage-indicator-stack">
-        <div className="signage-indicator-stack__ring">
-          <DonutRing slices={slices} pct={pct} periodLabel={periodLabel} compact={compact} showSubLabel={false} />
+      <WidgetCircleLayout
+        compact
+        className="signage-donut-side"
+        circle={<DonutRing slices={slices} pct={pct} periodLabel={periodLabel} compact={compact} showSubLabel={false} />}
+      >
+        <div className="signage-legend-only">
+          <div className="signage-legend-item">
+            <SignageLegendDot color="#1B8354" />
+            <span>{periodLabel}</span>
+          </div>
+          <div className="signage-legend-item">
+            <SignageLegendDot color="#D1E9FF" />
+            <span>الباقي</span>
+          </div>
+          <div className="signage-legend-item signage-legend-item--plain">
+            <span>الإجمالي</span>
+          </div>
         </div>
-        <p className="signage-indicator-stack__caption">توزيع {periodLabel}</p>
-        <div className="signage-indicator-stack__legend">
-          <SignageStatRow
-            label={<><SignageLegendDot color="#1B8354" /> {periodLabel}</>}
-            value={formatNumber(periodValue)}
-            valueTone="green"
-          />
-          <SignageStatRow
-            label={<><SignageLegendDot color="#D1E9FF" /> الباقي</>}
-            value={formatNumber(remainder)}
-            valueTone="blue"
-          />
-          <SignageStatRow label="الإجمالي" value={formatNumber(total)} />
-        </div>
-      </div>
+      </WidgetCircleLayout>
     );
   }
 
