@@ -2,6 +2,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { DGA } from '../styles/dga';
 import type { CSSProperties } from 'react';
 import { WidgetCircleLayout } from './WidgetCircleLayout';
+import { SignageStatRow } from './SignageStatRows';
 import { CompareStrip } from './CompareStrip';
 
 interface CompareWidgetProps {
@@ -36,8 +37,8 @@ function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidget
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-base'}`}>{pct}%</span>
-        <span className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[8px]'}`}>مقارنة</span>
+        <span className="signage-ring-pct font-bold text-[#111927] tabular-nums">{pct}%</span>
+        <span className="signage-ring-sub text-[#384250]">مقارنة</span>
       </div>
     </div>
   );
@@ -56,19 +57,11 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
       compact={compact}
       circle={<CompareRing total={total} periodValue={periodValue} periodLabel={periodLabel} compact={compact} />}
     >
-      {!compact && (
-        <p className="font-bold text-[#111927] tabular-nums text-base">{ratio}%</p>
-      )}
-      <p className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[9px]'}`}>نسبة {periodLabel} من الإجمالي</p>
-      <div className="space-y-0.5">
-        <div className="flex justify-between text-[8px] text-[#6C737F]">
-          <span>{periodLabel}</span>
-          <span className="font-semibold text-[#1B8354] tabular-nums">{formatNumber(periodValue)}</span>
-        </div>
-        <div className="flex justify-between text-[8px] text-[#6C737F]">
-          <span>الفرق</span>
-          <span className="font-semibold text-[#175CD3] tabular-nums">{formatNumber(diff)}</span>
-        </div>
+      {!compact && <p className="signage-stat-value font-bold text-[#111927] tabular-nums">{ratio}%</p>}
+      <p className="signage-stat-heading">نسبة {periodLabel} من الإجمالي</p>
+      <div className="signage-stat-list">
+        <SignageStatRow label={periodLabel} value={formatNumber(periodValue)} valueTone="green" />
+        <SignageStatRow label="الفرق" value={formatNumber(diff)} valueTone="blue" />
       </div>
       {!compact && (
         <div className="space-y-1 mt-1 compare-widget-bars">

@@ -42,8 +42,8 @@ function ProgressRing({ pct, compact }: { pct: number; compact?: boolean }) {
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-base'}`}>{clamped.toFixed(0)}%</span>
-        <span className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[8px]'}`}>ملخص</span>
+        <span className="signage-ring-pct font-bold text-[#111927] tabular-nums">{clamped.toFixed(0)}%</span>
+        <span className="signage-ring-sub text-[#384250]">ملخص</span>
       </div>
     </div>
   );
@@ -82,32 +82,32 @@ export function SummaryWidget({
 
   return (
     <WidgetCircleLayout compact={compact} circle={<ProgressRing pct={ringPct} compact={compact} />}>
-      {!compact && <p className="font-semibold text-[#384250] text-xs">ملخص الأداء</p>}
-      <div className="grid grid-cols-2 gap-0.5">
-        <div className="rounded-md bg-[#EFF8FF] px-1.5 py-1">
-          <p className="text-[7px] text-[#6C737F]">الإجمالي</p>
-          <p className={`font-bold text-[#175CD3] tabular-nums ${compact ? 'text-[10px]' : 'text-xs'}`}>{formatCompact(total)}</p>
+      {!compact && <p className="signage-stat-heading">ملخص الأداء</p>}
+      <div className="signage-stat-boxes">
+        <div className="signage-stat-box signage-stat-box--blue">
+          <p className="signage-stat-box__label">الإجمالي</p>
+          <p className="signage-stat-box__value">{formatCompact(total)}</p>
         </div>
-        <div className="rounded-md bg-[#F3FCF6] px-1.5 py-1">
-          <p className="text-[7px] text-[#6C737F]">{periodLabel}</p>
-          <p className={`font-bold text-[#1B8354] tabular-nums ${compact ? 'text-[10px]' : 'text-xs'}`}>{formatCompact(periodValue)}</p>
+        <div className="signage-stat-box signage-stat-box--green">
+          <p className="signage-stat-box__label">{periodLabel}</p>
+          <p className="signage-stat-box__value">{formatCompact(periodValue)}</p>
         </div>
       </div>
       {targetPct !== null && (
-        <div className="mt-0.5">
-          <div className="flex justify-between text-[8px] text-[#6C737F] mb-0.5">
-            <span>تقدم الهدف</span>
-            <span className="font-semibold text-[#1B8354]">{targetPct.toFixed(1)}%</span>
+        <div className="signage-progress-block">
+          <div className="signage-stat-row">
+            <span className="signage-stat-label">تقدم الهدف</span>
+            <span className="signage-stat-value signage-stat-value--green">{targetPct.toFixed(1)}%</span>
           </div>
-          <div className="h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
+          <div className="signage-progress-track">
             <div
-              className="h-full rounded-full bg-gradient-to-l from-[#1B8354] to-[#175CD3] gauge-progress-fill"
+              className="signage-progress-fill gauge-progress-fill"
               style={{ '--gauge-pct': `${targetPct}%` } as CSSProperties}
             />
           </div>
         </div>
       )}
-      <p className={`text-[7px] font-semibold ${isPositive ? 'text-[#079455]' : 'text-[#D92D20]'}`}>
+      <p className={`signage-growth-badge ${isPositive ? 'signage-growth-badge--up' : 'signage-growth-badge--down'}`}>
         النمو {isPositive ? '+' : ''}{growth.toFixed(1)}%
       </p>
     </WidgetCircleLayout>

@@ -1,6 +1,7 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { DGA } from '../styles/dga';
 import { WidgetCircleLayout } from './WidgetCircleLayout';
+import { SignageLegendDot, SignageStatRow } from './SignageStatRows';
 
 interface DonutWidgetProps {
   total: number;
@@ -58,8 +59,8 @@ function DonutRing({
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-lg'}`}>{pct}%</span>
-        <span className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[9px]'}`}>{periodLabel}</span>
+        <span className="signage-ring-pct font-bold text-[#111927] tabular-nums">{pct}%</span>
+        <span className="signage-ring-sub text-[#384250]">{periodLabel}</span>
       </div>
     </div>
   );
@@ -80,29 +81,20 @@ export function DonutWidget({ total, periodValue, periodLabel, compact = false, 
         compact={compact}
         circle={<DonutRing slices={slices} pct={pct} periodLabel={periodLabel} compact={compact} />}
       >
-        {!compact && (
-          <p className="font-bold text-[#111927] tabular-nums text-lg">{pct}%</p>
-        )}
-        <p className={`text-[#384250] font-medium ${compact ? 'text-[8px]' : 'text-[10px]'}`}>توزيع {periodLabel}</p>
-        <div className={`space-y-0.5 ${compact ? '' : 'mt-0.5'}`}>
-          <div className="flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1 text-[8px] text-[#6C737F]">
-              <span className="w-2 h-2 rounded-full bg-[#1B8354] shrink-0" />
-              {periodLabel}
-            </span>
-            <span className="text-[9px] font-semibold text-[#1B8354] tabular-nums">{formatNumber(periodValue)}</span>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="flex items-center gap-1 text-[8px] text-[#6C737F]">
-              <span className="w-2 h-2 rounded-full bg-[#D1E9FF] shrink-0" />
-              الباقي
-            </span>
-            <span className="text-[9px] font-semibold text-[#175CD3] tabular-nums">{formatNumber(remainder)}</span>
-          </div>
-          <div className="flex items-center justify-between gap-2 pt-0.5 border-t border-[#E5E7EB]">
-            <span className="text-[8px] text-[#6C737F]">الإجمالي</span>
-            <span className="text-[9px] font-bold text-[#111927] tabular-nums">{formatNumber(total)}</span>
-          </div>
+        {!compact && <p className="signage-stat-value font-bold text-[#111927] tabular-nums">{pct}%</p>}
+        <p className="signage-stat-heading">توزيع {periodLabel}</p>
+        <div className="signage-stat-list">
+          <SignageStatRow
+            label={<><SignageLegendDot color="#1B8354" /> {periodLabel}</>}
+            value={formatNumber(periodValue)}
+            valueTone="green"
+          />
+          <SignageStatRow
+            label={<><SignageLegendDot color="#D1E9FF" /> الباقي</>}
+            value={formatNumber(remainder)}
+            valueTone="blue"
+          />
+          <SignageStatRow label="الإجمالي" value={formatNumber(total)} />
         </div>
       </WidgetCircleLayout>
     );

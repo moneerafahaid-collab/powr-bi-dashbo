@@ -172,29 +172,28 @@ export function KPIGaugeDashboard({
   if (horizontal && embedded) {
     return (
       <WidgetCircleLayout compact={compact} circle={gaugeNode}>
-        {!compact && <p className="font-semibold text-[#384250] text-[10px]">{gaugeTitle}</p>}
-        {compact && <p className="font-semibold text-[#384250] text-[8px] leading-tight">{gaugeTitle}</p>}
-        {!compact && <p className="font-bold text-[#111927] tabular-nums text-lg">{centerValue}</p>}
-        <span className={`inline-flex items-center gap-1 w-fit text-[8px] font-semibold px-1.5 py-px rounded ${isPositive ? 'bg-[#ECFDF3] text-[#079455]' : 'bg-[#FEF3F2] text-[#D92D20]'}`}>
-          {isPositive ? <TrendingUp className="w-2.5 h-2.5" /> : <TrendingDown className="w-2.5 h-2.5" />}
+        <p className="signage-stat-heading">{gaugeTitle}</p>
+        {!compact && <p className="signage-stat-value font-bold text-[#111927] tabular-nums">{centerValue}</p>}
+        <span className={`signage-growth-badge inline-flex items-center gap-1 w-fit ${isPositive ? 'signage-growth-badge--up' : 'signage-growth-badge--down'}`}>
+          {isPositive ? <TrendingUp className="signage-growth-icon" /> : <TrendingDown className="signage-growth-icon" />}
           {isPositive ? '+' : ''}{growth.toFixed(1)}%
         </span>
-        <div className={`grid grid-cols-1 ${compact ? 'gap-px' : 'gap-0.5 mt-0.5'}`}>
-          {stats.slice(0, compact ? 2 : 3).map((s) => (
-            <div key={s.label} className="flex justify-between items-center text-[7px] leading-tight">
-              <span className="text-[#6C737F] truncate">{s.label}</span>
-              <span className="font-semibold text-[#111927] tabular-nums shrink-0 mr-1">{s.value}</span>
+        <div className="signage-stat-list">
+          {stats.map((s) => (
+            <div key={s.label} className="signage-stat-row">
+              <span className="signage-stat-label">{s.label}</span>
+              <span className="signage-stat-value tabular-nums">{s.value}</span>
             </div>
           ))}
         </div>
         {target && targetPct !== null && (
-          <div className="mt-0.5">
-            <div className="flex justify-between text-[8px] text-[#6C737F] mb-0.5">
-              <span>تقدم الهدف</span>
-              <span className="font-semibold text-[#1B8354]">{targetPct.toFixed(1)}%</span>
+          <div className="signage-progress-block">
+            <div className="signage-stat-row">
+              <span className="signage-stat-label">تقدم الهدف</span>
+              <span className="signage-stat-value signage-stat-value--green">{targetPct.toFixed(1)}%</span>
             </div>
-            <div className="h-1.5 bg-[#E5E7EB] rounded-full overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-l from-[#1B8354] to-[#175CD3] gauge-progress-fill" style={{ '--gauge-pct': `${targetPct}%` } as CSSProperties} />
+            <div className="signage-progress-track">
+              <div className="signage-progress-fill gauge-progress-fill" style={{ '--gauge-pct': `${targetPct}%` } as CSSProperties} />
             </div>
           </div>
         )}

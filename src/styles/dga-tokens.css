@@ -87,19 +87,23 @@
   background: var(--dga-gray-100);
 }
 
-/* ═══ شاشة العرض 50سم × 80سم — هوامش دنيا، خطوط واضحة، تمدد تلقائي ═══ */
+/* ═══ شاشة العرض 50سم × 80سم — بطاقات كبيرة، خطوط واضحة، تباين عالٍ ═══ */
 html.signage-mode {
   --signage-scale: 1;
   --signage-vw: 1vw;
   --signage-vh: 1vh;
   --signage-gap: 2px;
-  --signage-pad: 2px;
-  --signage-circle: min(13.5vw, 7.2vh);
-  --signage-font-xs: clamp(8px, 1.1vh, 12px);
-  --signage-font-sm: clamp(9px, 1.35vh, 14px);
-  --signage-font-md: clamp(11px, 1.55vh, 16px);
-  --signage-font-lg: clamp(13px, 1.85vh, 19px);
-  --signage-font-xl: clamp(15px, 2.15vh, 22px);
+  --signage-pad: 1px;
+  --signage-circle: min(19vw, 11vh);
+  --signage-font-xs: clamp(10px, 1.45vh, 14px);
+  --signage-font-sm: clamp(11px, 1.65vh, 16px);
+  --signage-font-md: clamp(13px, 1.95vh, 18px);
+  --signage-font-lg: clamp(15px, 2.35vh, 22px);
+  --signage-font-xl: clamp(17px, 2.75vh, 26px);
+  --signage-font-2xl: clamp(19px, 3.1vh, 30px);
+  --signage-text: #111927;
+  --signage-text-muted: #384250;
+  --signage-surface: #f4f6f8;
 }
 
 .signage-layout {
@@ -115,7 +119,7 @@ html.signage-mode {
 }
 
 html.signage-mode .signage-layout {
-  grid-template-rows: auto minmax(0, 1fr) minmax(20vh, 0.34fr);
+  grid-template-rows: auto minmax(0, 1.18fr) minmax(17vh, 0.28fr);
   gap: var(--signage-gap);
   padding: var(--signage-pad);
 }
@@ -128,31 +132,42 @@ html.signage-mode .dga-widget {
 /* ── KPI علوية ── */
 html.signage-mode .signage-kpi-row {
   gap: var(--signage-gap) !important;
+  min-height: 11vh;
 }
 
-html.signage-mode .dga-widget-stat {
-  padding: 4px 5px !important;
-  border-radius: 6px;
+html.signage-mode .signage-kpi-card {
+  padding: 3px 4px !important;
+  min-height: 100%;
+  border: 1px solid var(--dga-gray-300) !important;
 }
 
 html.signage-mode .signage-kpi-value {
-  font-size: var(--signage-font-xl) !important;
-  line-height: 1.15;
-  font-weight: 700;
+  font-size: var(--signage-font-2xl) !important;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--signage-text);
 }
 
 html.signage-mode .signage-kpi-label {
-  font-size: var(--signage-font-sm) !important;
-  font-weight: 600;
+  font-size: var(--signage-font-md) !important;
+  font-weight: 700;
+  color: var(--signage-text-muted);
 }
 
 html.signage-mode .signage-kpi-sub {
-  font-size: var(--signage-font-xs) !important;
+  font-size: var(--signage-font-sm) !important;
+  font-weight: 600;
+  color: var(--signage-text-muted);
 }
 
 html.signage-mode .stat-icon-box-sm {
-  width: clamp(20px, 2.8vh, 28px);
-  height: clamp(20px, 2.8vh, 28px);
+  width: clamp(22px, 3.2vh, 32px);
+  height: clamp(22px, 3.2vh, 32px);
+}
+
+html.signage-mode .stat-icon-box-sm svg {
+  width: clamp(14px, 2vh, 18px);
+  height: clamp(14px, 2vh, 18px);
 }
 
 /* ── شبكة 4 مؤشرات 2×2 ── */
@@ -175,35 +190,44 @@ html.signage-mode .signage-indicators-grid {
   min-height: 0;
   min-width: 0;
   height: 100%;
-  border-radius: 6px;
+  border-radius: 5px;
+  border: 1px solid var(--dga-gray-300);
+}
+
+html.signage-mode .signage-mini-card {
+  background: #fff;
 }
 
 .signage-mini-card__title {
   font-size: 9px;
-  line-height: 1.3;
-  padding: 3px 6px;
+  line-height: 1.25;
+  padding: 2px 5px;
   text-align: right;
   white-space: normal;
   word-break: break-word;
 }
 
 html.signage-mode .signage-mini-card__title {
-  font-size: var(--signage-font-sm);
-  font-weight: 700;
-  padding: 4px 6px;
+  font-size: var(--signage-font-md);
+  font-weight: 800;
+  padding: 3px 5px;
+  color: var(--signage-text);
+  background: var(--signage-surface);
+  border-bottom: 1px solid var(--dga-gray-200);
 }
 
 .signage-mini-card__body {
   flex: 1;
   min-height: 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
-  padding: 4px 6px;
+  padding: 3px 4px;
+  background: #fff;
 }
 
 html.signage-mode .signage-mini-card__body {
-  padding: 4px 6px 5px;
+  padding: 3px 4px;
 }
 
 html.signage-mode .signage-mini-card__body .widget-circle-layout {
@@ -225,8 +249,10 @@ html.signage-mode .signage-mini-card__body .widget-circle-layout {
 html.signage-mode .signage-circle-slot {
   width: var(--signage-circle);
   height: var(--signage-circle);
-  max-width: 30%;
+  max-width: 42%;
+  min-width: 28%;
   flex-shrink: 0;
+  align-self: center;
 }
 
 html.signage-mode .signage-circle-slot svg {
@@ -236,25 +262,167 @@ html.signage-mode .signage-circle-slot svg {
 }
 
 html.signage-mode .widget-circle-layout {
-  gap: 5px;
+  gap: 4px;
   align-items: center;
+  height: 100%;
 }
 
 html.signage-mode .widget-circle-content {
-  font-size: var(--signage-font-sm);
-  line-height: 1.35;
-  text-align: right;
-  justify-content: center;
-}
-
-html.signage-mode .widget-circle-content p,
-html.signage-mode .widget-circle-content span {
-  line-height: 1.35;
-}
-
-html.signage-mode .widget-circle-content .font-bold,
-html.signage-mode .widget-circle-content [class*='font-bold'] {
   font-size: var(--signage-font-md);
+  line-height: 1.3;
+  text-align: right;
+  justify-content: space-evenly;
+  height: 100%;
+  color: var(--signage-text);
+}
+
+/* ── صفوف الأرقام داخل المؤشرات ── */
+html.signage-mode .signage-stat-heading {
+  font-size: var(--signage-font-md);
+  font-weight: 800;
+  color: var(--signage-text);
+  line-height: 1.2;
+}
+
+html.signage-mode .signage-stat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+html.signage-mode .signage-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+
+html.signage-mode .signage-stat-label {
+  font-size: var(--signage-font-sm);
+  font-weight: 700;
+  color: var(--signage-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+html.signage-mode .signage-stat-value {
+  font-size: var(--signage-font-lg);
+  font-weight: 800;
+  color: var(--signage-text);
+  flex-shrink: 0;
+}
+
+html.signage-mode .signage-stat-value--green {
+  color: var(--dga-sa-700);
+}
+
+html.signage-mode .signage-stat-value--blue {
+  color: var(--dga-info-800);
+}
+
+html.signage-mode .signage-ring-pct {
+  font-size: var(--signage-font-lg);
+  font-weight: 800;
+}
+
+html.signage-mode .signage-ring-sub {
+  font-size: var(--signage-font-xs);
+  font-weight: 700;
+}
+
+html.signage-mode .signage-legend-dot {
+  width: clamp(8px, 1.15vh, 11px);
+  height: clamp(8px, 1.15vh, 11px);
+  border-radius: 999px;
+  display: inline-block;
+}
+
+html.signage-mode .signage-stat-boxes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  width: 100%;
+}
+
+html.signage-mode .signage-stat-box {
+  border-radius: 4px;
+  padding: 3px 4px;
+  text-align: center;
+  border: 1px solid var(--dga-gray-200);
+}
+
+html.signage-mode .signage-stat-box--blue {
+  background: #e8f1ff;
+}
+
+html.signage-mode .signage-stat-box--green {
+  background: #e8f7ee;
+}
+
+html.signage-mode .signage-stat-box__label {
+  font-size: var(--signage-font-sm);
+  font-weight: 700;
+  color: var(--signage-text-muted);
+}
+
+html.signage-mode .signage-stat-box__value {
+  font-size: var(--signage-font-xl);
+  font-weight: 800;
+  color: var(--signage-text);
+  line-height: 1.1;
+}
+
+html.signage-mode .signage-stat-box--blue .signage-stat-box__value {
+  color: var(--dga-info-800);
+}
+
+html.signage-mode .signage-stat-box--green .signage-stat-box__value {
+  color: var(--dga-sa-700);
+}
+
+html.signage-mode .signage-progress-block {
+  width: 100%;
+}
+
+html.signage-mode .signage-progress-track {
+  height: clamp(6px, 0.9vh, 10px);
+  background: var(--dga-gray-200);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+html.signage-mode .signage-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(270deg, var(--dga-sa-600), var(--dga-info-700));
+}
+
+html.signage-mode .signage-growth-badge {
+  font-size: var(--signage-font-sm);
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+html.signage-mode .signage-growth-badge--up {
+  color: var(--dga-success-600);
+  background: #ecfdf3;
+}
+
+html.signage-mode .signage-growth-badge--down {
+  color: var(--dga-error-600);
+  background: #fef3f2;
+}
+
+html.signage-mode .signage-growth-icon {
+  width: clamp(12px, 1.6vh, 16px);
+  height: clamp(12px, 1.6vh, 16px);
 }
 
 /* ── مخطط اتجاه الأداء ── */
@@ -286,7 +454,8 @@ html.signage-mode .signage-trend-panel__title {
 }
 
 html.signage-mode .signage-trend-chart {
-  min-height: 18vh;
+  min-height: 17vh;
+  padding: 1px 3px 3px;
 }
 
 /* ── رأس وتذييل مضغوطان ── */
