@@ -2,7 +2,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { DGA } from '../styles/dga';
 import type { CSSProperties } from 'react';
 import { WidgetCircleLayout } from './WidgetCircleLayout';
-import { SignageStatRow } from './SignageStatRows';
 import { CompareStrip } from './CompareStrip';
 
 interface CompareWidgetProps {
@@ -11,10 +10,6 @@ interface CompareWidgetProps {
   periodLabel: string;
   compact?: boolean;
   horizontal?: boolean;
-}
-
-function formatNumber(n: number) {
-  return n.toLocaleString('ar-SA');
 }
 
 function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidgetProps) {
@@ -45,7 +40,6 @@ function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidget
 }
 
 export function CompareWidget({ total, periodValue, periodLabel, compact = false, horizontal = false }: CompareWidgetProps) {
-  const diff = total - periodValue;
   const ratio = total > 0 ? ((periodValue / total) * 100).toFixed(1) : '0';
 
   if (!horizontal) {
@@ -59,10 +53,6 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
     >
       {!compact && <p className="signage-stat-value font-bold text-[#111927] tabular-nums">{ratio}%</p>}
       <p className="signage-stat-heading">نسبة {periodLabel} من الإجمالي</p>
-      <div className="signage-stat-list">
-        <SignageStatRow label={periodLabel} value={formatNumber(periodValue)} valueTone="green" />
-        <SignageStatRow label="الفرق" value={formatNumber(diff)} valueTone="blue" />
-      </div>
       {!compact && (
         <div className="space-y-1 mt-1 compare-widget-bars">
           {[
