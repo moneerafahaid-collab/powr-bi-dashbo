@@ -9,6 +9,7 @@ import { CompareStrip } from './CompareStrip';
 import { CompareWidget } from './CompareWidget';
 import { SummaryWidget } from './SummaryWidget';
 import { SignageMiniCard } from './SignageMiniCard';
+import { SignageCompareBarChart } from './SignageCompareBarChart';
 import {
   AreaChart,
   Area,
@@ -156,27 +157,43 @@ function SignageDashboard({ data }: { data: SimpleMetrics }) {
         </SignageMiniCard>
       </div>
 
-      <div className="signage-trend-panel dga-widget">
-        <div className="shrink-0 h-0.5 bg-[#175CD3]" />
-        <p className="signage-trend-panel__title shrink-0 border-b border-[#E5E7EB] font-semibold text-[#384250]">
-          اتجاه الأداء — {periodMeta.label}
-        </p>
-        <div className="signage-trend-chart">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={trendData} margin={{ top: 6, right: 8, left: 2, bottom: 4 }}>
-              <defs>
-                <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.35} />
-                  <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
-              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 11 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
-              <YAxis tick={{ fill: DGA.gray[500], fontSize: 10 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
-              <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
-              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 4 }} />
-            </AreaChart>
-          </ResponsiveContainer>
+      <div className="signage-bottom-row">
+        <div className="signage-chart-panel dga-widget">
+          <div className="shrink-0 h-0.5 bg-[#175CD3]" />
+          <p className="signage-chart-panel__title shrink-0 border-b border-[#E5E7EB] font-semibold text-[#384250]">
+            اتجاه الأداء — {periodMeta.label}
+          </p>
+          <div className="signage-chart-panel__body">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trendData} margin={{ top: 6, right: 8, left: 2, bottom: 4 }}>
+                <defs>
+                  <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.35} />
+                    <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
+                <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 11 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+                <YAxis tick={{ fill: DGA.gray[500], fontSize: 10 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
+                <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 4 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="signage-chart-panel dga-widget">
+          <div className="shrink-0 h-0.5 bg-[#DBA102]" />
+          <p className="signage-chart-panel__title shrink-0 border-b border-[#E5E7EB] font-semibold text-[#384250]">
+            مقارنة الإجمالي والفترة
+          </p>
+          <div className="signage-chart-panel__body">
+            <SignageCompareBarChart
+              total={data.total}
+              periodValue={data.periodValue}
+              periodLabel={periodMeta.label}
+            />
+          </div>
         </div>
       </div>
     </div>

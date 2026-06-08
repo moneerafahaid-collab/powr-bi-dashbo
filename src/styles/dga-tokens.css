@@ -119,7 +119,7 @@ html.signage-mode {
 }
 
 html.signage-mode .signage-layout {
-  grid-template-rows: auto minmax(0, 1.18fr) minmax(17vh, 0.28fr);
+  grid-template-rows: auto minmax(0, 1.08fr) minmax(18vh, 0.34fr);
   gap: var(--signage-gap);
   padding: var(--signage-pad);
 }
@@ -425,37 +425,54 @@ html.signage-mode .signage-growth-icon {
   height: clamp(12px, 1.6vh, 16px);
 }
 
-/* ── مخطط اتجاه الأداء ── */
-.signage-trend-panel {
+/* ── صف سفلي: اتجاه الأداء + مقارنة ── */
+.signage-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+}
+
+html.signage-mode .signage-bottom-row {
+  gap: var(--signage-gap);
+}
+
+.signage-chart-panel {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   height: 100%;
-  border-radius: 6px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.signage-trend-panel__title {
+.signage-chart-panel__title {
   font-size: 10px;
-  padding: 4px 6px;
-  text-align: right;
+  padding: 3px 5px;
+  text-align: center;
 }
 
-html.signage-mode .signage-trend-panel__title {
+html.signage-mode .signage-chart-panel__title {
   font-size: var(--signage-font-md);
-  font-weight: 700;
-  padding: 5px 6px;
+  font-weight: 800;
+  padding: 4px 5px;
+  color: var(--signage-text);
+  text-align: center;
 }
 
-.signage-trend-chart {
+.signage-chart-panel__body {
   flex: 1;
   min-height: 0;
   width: 100%;
   padding: 2px 4px 4px;
 }
 
-html.signage-mode .signage-trend-chart {
+html.signage-mode .signage-chart-panel__body {
   min-height: 17vh;
-  padding: 1px 3px 3px;
+  padding: 2px 3px 3px;
 }
 
 /* ── رأس وتذييل مضغوطان ── */
