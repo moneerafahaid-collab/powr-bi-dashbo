@@ -54,7 +54,7 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
 
   if (compact) {
     return (
-      <div className="signage-indicator-stack">
+      <div className="signage-indicator-stack signage-compare-stack">
         <div className="signage-indicator-stack__ring">
           <CompareRing
             total={total}
