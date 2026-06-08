@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { PowerBIPage } from './components/PowerBIPage';
 import { pagesData, ROTATION_INTERVAL_MS, PERIOD_META } from './data/simpleData';
-import { useDisplayMode, isSignageMode, isCompactView } from './components/ui/use-display-mode';
+import { useDisplayMode, isSignageMode, isCompactView, useSignageTall } from './components/ui/use-display-mode';
 import { useAutoFullscreen } from './components/ui/use-auto-fullscreen';
 import { HeaderBrand } from './components/HeaderBrand';
 import {
@@ -18,6 +18,7 @@ export default function App() {
   const isSignage = isSignageMode(displayMode);
   const isMobile = displayMode === 'mobile';
   const isCompact = isCompactView(displayMode);
+  const isTallSignage = useSignageTall() && isSignage;
   useAutoFullscreen(isSignage);
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -29,11 +30,12 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('signage-mode', isSignage);
+    document.documentElement.classList.toggle('signage-tall', isTallSignage);
     document.documentElement.classList.toggle('mobile-mode', isMobile);
     return () => {
-      document.documentElement.classList.remove('signage-mode', 'mobile-mode');
+      document.documentElement.classList.remove('signage-mode', 'signage-tall', 'mobile-mode');
     };
-  }, [isSignage, isMobile]);
+  }, [isSignage, isTallSignage, isMobile]);
 
   useEffect(() => {
     const clock = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -83,10 +85,42 @@ export default function App() {
     >
       {/* Header */}
       <header
-        className={`shrink-0 border-b-[3px] border-[#1B8354] ${isCompact ? 'px-3 py-2' : 'px-6 py-4'}`}
+        className={`shrink-0 border-b-[3px] border-[#1B8354] ${
+          isTallSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-4'
+        }`}
         style={{ background: 'var(--dga-header-gradient)' }}
       >
-        {isCompact ? (
+        {isTallSignage ? (
+          <div className="signage-tall-header flex items-center gap-2 min-h-0">
+            <HeaderBrand variant="signage-tall" />
+            <div className="flex-1 min-w-0 text-center px-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentPage}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex items-center justify-center gap-1 mb-0.5">
+                    <span className="text-white/60 text-[9px]">{current.category}</span>
+                    <span className="text-[8px] font-semibold px-1 py-px bg-[#1B8354] text-white rounded">
+                      {PERIOD_META[current.period].label}
+                    </span>
+                  </div>
+                  <h2 className="text-white text-xs font-bold leading-tight truncate">{current.pageName}</h2>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            <div className="text-left shrink-0 border border-white/25 px-2 py-1 bg-white/10 rounded-lg">
+              <p className="text-white/80 text-[8px] font-medium leading-tight">{dateStr}</p>
+              <p className="text-white font-semibold text-xs tabular-nums flex items-center gap-1 justify-end">
+                <Clock className="w-3 h-3 text-[#DFF6E7]" />
+                {timeStr}
+              </p>
+            </div>
+          </div>
+        ) : isCompact ? (
           <div className={`flex flex-col ${isMobile ? 'gap-1' : 'gap-1.5'}`}>
             <div className="flex items-start justify-between gap-2">
               <HeaderBrand variant="signage" />
@@ -212,14 +246,16 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
+      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isTallSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
         {isCompact ? (
           <div className="flex items-center gap-2">
-            {!isMobile && (
+            {isTallSignage ? (
+              <span className="text-[8px] text-[#6C737F] shrink-0">أمانة حائل</span>
+            ) : !isMobile ? (
               <span className="text-[10px] text-[#6C737F] shrink-0 hidden sm:inline">
                 لوحة استعراض للزوار — أمانة منطقة حائل
               </span>
-            )}
+            ) : null}
             {isMobile && (
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={goToPrevious} className="p-1.5 text-[#384250] rounded-lg" aria-label="السابق"><ChevronRight className="w-4 h-4" /></button>
@@ -236,9 +272,11 @@ export default function App() {
               <div className="h-full bg-[#1B8354] transition-all duration-1000 ease-linear rounded-full" style={{ width: isPaused ? '0%' : `${progress}%` }} />
             </div>
             <span className="text-[10px] font-semibold text-[#384250] tabular-nums shrink-0">
-              {isMobile
-                ? `${currentPage + 1}/${totalPages}${isPaused ? '' : ` · ${countdown}ث`}`
-                : isPaused ? '—' : `${countdown}ث`}
+              {isTallSignage
+                ? `${currentPage + 1}/${totalPages} · ${isPaused ? '—' : `${countdown}ث`}`
+                : isMobile
+                  ? `${currentPage + 1}/${totalPages}${isPaused ? '' : ` · ${countdown}ث`}`
+                  : isPaused ? '—' : `${countdown}ث`}
             </span>
           </div>
         ) : (

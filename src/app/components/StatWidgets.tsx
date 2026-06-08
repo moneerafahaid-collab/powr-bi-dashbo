@@ -78,12 +78,12 @@ export function StatWidgets({ data, compact = false, signage = false, mobile = f
               className="dga-widget-stat flex flex-col items-center text-center p-1.5 min-w-0"
               style={{ '--stat-accent': item.accent, '--stat-bg': item.bg } as CSSProperties}
             >
-              <div className="stat-icon-box stat-icon-box-sm mb-1">
+              <div className="stat-icon-box stat-icon-box-sm mb-0.5">
                 <Icon className="w-3 h-3" />
               </div>
-              <p className="text-[8px] text-[#6C737F] font-medium truncate w-full">{item.label}</p>
-              <p className="text-sm font-bold text-[#111927] tabular-nums leading-tight">{item.value}</p>
-              <p className="text-[7px] text-[#9DA4AE]">{item.sub}</p>
+              <p className="signage-kpi-label text-[#6C737F] font-medium truncate w-full">{item.label}</p>
+              <p className="signage-kpi-value text-sm font-bold text-[#111927] tabular-nums leading-tight">{item.value}</p>
+              <p className="signage-kpi-sub text-[#9DA4AE]">{item.sub}</p>
             </div>
           );
         })}

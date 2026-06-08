@@ -87,7 +87,7 @@
   background: var(--dga-gray-100);
 }
 
-/* شاشة العرض — 3 صفوف: KPI | تحليل | اتجاه (متساويان) */
+/* شاشة العرض — 3 صفوف: KPI | تحليل | اتجاه */
 .signage-layout {
   display: grid;
   height: 100%;
@@ -97,6 +97,52 @@
   gap: 6px;
   padding: 6px;
   background: var(--dga-gray-100);
+}
+
+/* شاشة 50سم عرض × 80سم طول — نسبة 5:8 */
+html.signage-tall .signage-layout {
+  grid-template-rows: auto minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: 4px;
+  padding: 4px;
+}
+
+html.signage-tall .signage-charts-row {
+  gap: 4px;
+  padding: 4px;
+}
+
+html.signage-tall .signage-chart-slot {
+  border-radius: 6px;
+}
+
+html.signage-tall .dga-widget-stat {
+  padding: 3px 4px !important;
+}
+
+html.signage-tall .signage-kpi-value {
+  font-size: 11px !important;
+  line-height: 1.1;
+}
+
+html.signage-tall .signage-kpi-label {
+  font-size: 7px !important;
+}
+
+html.signage-tall .signage-kpi-sub {
+  font-size: 6px !important;
+}
+
+html.signage-tall .stat-icon-box-sm {
+  width: 20px;
+  height: 20px;
+}
+
+html.signage-tall .signage-chart-body svg {
+  max-height: 92px;
+}
+
+html.signage-tall footer .h-1\.5 {
+  height: 4px;
 }
 
 .signage-panel {
