@@ -18,7 +18,7 @@ export function WidgetCircleLayout({ circle, children, compact = false, classNam
       >
         {circle}
       </div>
-      <div className="widget-circle-content flex-1 min-w-0 flex flex-col justify-center gap-0.5 overflow-hidden">{children}</div>
+      <div className="widget-circle-content flex-1 min-w-0 flex flex-col justify-center gap-0.5">{children}</div>
     </div>
   );
 }

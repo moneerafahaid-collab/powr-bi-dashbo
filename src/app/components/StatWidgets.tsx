@@ -69,7 +69,7 @@ export function StatWidgets({ data, compact = false, signage = false, mobile = f
 
   if (signage) {
     return (
-      <div className="signage-kpi-row grid grid-cols-4 gap-1 shrink-0">
+      <div className="signage-kpi-row grid grid-cols-4 gap-0.5 shrink-0">
         {items.map((item) => {
           const Icon = item.icon;
           return (

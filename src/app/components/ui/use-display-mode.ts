@@ -51,13 +51,13 @@ function getDisplayMode(): DisplayMode {
   const h = window.innerHeight;
   const portrait = h > w;
 
-  /** جوال حقيقي فقط (عرض ضيق) */
-  if (w <= PHONE_MAX_WIDTH) return 'mobile';
-
   /**
-   * شاشة عرض 50×80 — أي شاشة طولية أو عرض ضيق (حتى 768px)
-   * يجب أن تسبق فحص الجوال حتى لا تظهر واجهة الموبايل على شاشة العرض
+   * شاشة عرض 50×80 — أي شاشة طولية طويلة (أولوية قبل الجوال)
+   * يمنع ظهور واجهة الموبايل المكدّسة على شاشة الكشك
    */
+  if (portrait && h >= 520) return 'signage';
+
+  if (w <= PHONE_MAX_WIDTH && !portrait) return 'mobile';
   if (portrait || w / h < 0.92 || w <= MOBILE_MAX) return 'signage';
 
   return 'desktop';

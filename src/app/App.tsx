@@ -85,7 +85,7 @@ export default function App() {
       {/* Header */}
       <header
         className={`shrink-0 border-b-[3px] border-[#1B8354] ${
-          isSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-4'
+          isSignage ? 'signage-header px-1 py-1' : isCompact ? 'px-3 py-2' : 'px-6 py-4'
         }`}
         style={{ background: 'var(--dga-header-gradient)' }}
       >
@@ -102,19 +102,19 @@ export default function App() {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="flex items-center justify-center gap-1 mb-0.5">
-                    <span className="text-white/60 text-[9px]">{current.category}</span>
-                    <span className="text-[8px] font-semibold px-1 py-px bg-[#1B8354] text-white rounded">
+                    <span className="signage-header-meta text-white/70">{current.category}</span>
+                    <span className="signage-header-badge font-semibold px-1.5 py-px bg-[#1B8354] text-white rounded">
                       {PERIOD_META[current.period].label}
                     </span>
                   </div>
-                  <h2 className="text-white text-xs font-bold leading-tight truncate">{current.pageName}</h2>
+                  <h2 className="signage-header-title text-white font-bold leading-tight">{current.pageName}</h2>
                 </motion.div>
               </AnimatePresence>
             </div>
-            <div className="text-left shrink-0 border border-white/25 px-2 py-1 bg-white/10 rounded-lg">
-              <p className="text-white/80 text-[8px] font-medium leading-tight">{dateStr}</p>
-              <p className="text-white font-semibold text-xs tabular-nums flex items-center gap-1 justify-end">
-                <Clock className="w-3 h-3 text-[#DFF6E7]" />
+            <div className="signage-header-clock text-left shrink-0 border border-white/25 px-1.5 py-0.5 bg-white/10 rounded-md">
+              <p className="text-white/80 font-medium leading-tight">{dateStr}</p>
+              <p className="text-white font-semibold tabular-nums flex items-center gap-1 justify-end">
+                <Clock className="w-3.5 h-3.5 text-[#DFF6E7]" />
                 {timeStr}
               </p>
             </div>
@@ -245,7 +245,7 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isSignage ? 'px-2 py-1.5' : isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
+      <footer className={`shrink-0 bg-white border-t border-[#D2D6DB] ${isSignage ? 'signage-footer px-1 py-1' : isCompact ? 'px-3 py-2' : 'px-6 py-3'}`}>
         {isCompact ? (
           <div className="flex items-center gap-2">
             {isSignage ? (

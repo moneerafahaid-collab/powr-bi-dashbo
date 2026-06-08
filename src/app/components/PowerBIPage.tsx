@@ -9,7 +9,6 @@ import { CompareStrip } from './CompareStrip';
 import { CompareWidget } from './CompareWidget';
 import { SummaryWidget } from './SummaryWidget';
 import { SignageMiniCard } from './SignageMiniCard';
-import { useSignageChartHeight } from './ui/use-signage-chart-height';
 import {
   AreaChart,
   Area,
@@ -117,8 +116,6 @@ function MobileDashboard({ data }: { data: SimpleMetrics }) {
 function SignageDashboard({ data }: { data: SimpleMetrics }) {
   const periodMeta = PERIOD_META[data.period];
   const growth = data.growth ?? 0;
-  const trendHeight = useSignageChartHeight(0.24, 110);
-
   const trendData = Array.from({ length: 6 }, (_, i) => ({
     label: `ف${i + 1}`,
     value: Math.round(data.periodValue * (0.78 + (i / 5) * 0.22))
@@ -161,12 +158,12 @@ function SignageDashboard({ data }: { data: SimpleMetrics }) {
 
       <div className="signage-trend-panel dga-widget">
         <div className="shrink-0 h-0.5 bg-[#175CD3]" />
-        <p className="signage-trend-panel__title shrink-0 px-2 py-1 border-b border-[#E5E7EB] font-semibold text-[#384250]">
+        <p className="signage-trend-panel__title shrink-0 border-b border-[#E5E7EB] font-semibold text-[#384250]">
           اتجاه الأداء — {periodMeta.label}
         </p>
-        <div className="signage-trend-chart" style={{ height: trendHeight }}>
-          <ResponsiveContainer width="100%" height={trendHeight}>
-            <AreaChart data={trendData} margin={{ top: 4, right: 6, left: 0, bottom: 2 }}>
+        <div className="signage-trend-chart">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={trendData} margin={{ top: 6, right: 8, left: 2, bottom: 4 }}>
               <defs>
                 <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.35} />
@@ -174,8 +171,8 @@ function SignageDashboard({ data }: { data: SimpleMetrics }) {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
-              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
-              <YAxis tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={false} tickLine={false} width={28} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 11 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+              <YAxis tick={{ fill: DGA.gray[500], fontSize: 10 }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
               <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
               <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 4 }} />
             </AreaChart>

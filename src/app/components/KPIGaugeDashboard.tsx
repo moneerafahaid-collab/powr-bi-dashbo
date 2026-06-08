@@ -78,7 +78,7 @@ function PowerBIGauge({
     <div className="w-full h-full flex flex-col items-center min-h-0 justify-center overflow-hidden">
       <svg
         viewBox={`0 0 ${vbW} ${vbH}`}
-        className={`w-full h-full ${tight ? 'max-h-[92px]' : embedded ? 'max-h-[118px]' : 'max-h-full'}`}
+        className={`w-full h-full signage-gauge-svg ${tight ? 'max-h-full' : embedded ? 'max-h-[118px]' : 'max-h-full'}`}
         preserveAspectRatio="xMidYMid meet"
       >
         <defs>

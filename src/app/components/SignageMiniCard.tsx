@@ -17,7 +17,7 @@ export function SignageMiniCard({ title, accent = 'neutral', children }: Signage
   return (
     <div className="signage-mini-card dga-widget">
       <div className={`shrink-0 h-0.5 ${accentBar[accent]}`} />
-      <p className="signage-mini-card__title shrink-0 px-1.5 py-0.5 border-b border-[#E5E7EB] text-[#384250] font-semibold truncate">
+      <p className="signage-mini-card__title shrink-0 border-b border-[#E5E7EB] text-[#384250] font-semibold">
         {title}
       </p>
       <div className="signage-mini-card__body">{children}</div>
