@@ -54,8 +54,8 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
 
   if (compact) {
     return (
-      <div className="signage-compare-stack">
-        <div className="signage-compare-stack__ring">
+      <div className="signage-indicator-stack">
+        <div className="signage-indicator-stack__ring">
           <CompareRing
             total={total}
             periodValue={periodValue}
@@ -64,7 +64,7 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
             showSubLabel={false}
           />
         </div>
-        <p className="signage-compare-stack__caption">نسبة {periodLabel} من الإجمالي</p>
+        <p className="signage-indicator-stack__caption">نسبة {periodLabel} من الإجمالي</p>
       </div>
     );
   }

@@ -29,13 +29,15 @@ function DonutRing({
   pct,
   periodLabel,
   compact,
-  showTooltip = true
+  showTooltip = true,
+  showSubLabel = true
 }: {
   slices: { name: string; value: number; color: string }[];
   pct: string;
   periodLabel: string;
   compact?: boolean;
   showTooltip?: boolean;
+  showSubLabel?: boolean;
 }) {
   return (
     <div className="relative w-full h-full min-h-0">
@@ -60,7 +62,7 @@ function DonutRing({
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <span className="signage-ring-pct font-bold text-[#111927] tabular-nums">{pct}%</span>
-        <span className="signage-ring-sub text-[#384250]">{periodLabel}</span>
+        {showSubLabel && <span className="signage-ring-sub text-[#384250]">{periodLabel}</span>}
       </div>
     </div>
   );
@@ -74,6 +76,30 @@ export function DonutWidget({ total, periodValue, periodLabel, compact = false, 
     { name: periodLabel, value: periodValue, color: DGA.sa[600] },
     { name: 'الباقي', value: remainder, color: '#D1E9FF' }
   ];
+
+  if (horizontal && compact) {
+    return (
+      <div className="signage-indicator-stack">
+        <div className="signage-indicator-stack__ring">
+          <DonutRing slices={slices} pct={pct} periodLabel={periodLabel} compact={compact} showSubLabel={false} />
+        </div>
+        <p className="signage-indicator-stack__caption">توزيع {periodLabel}</p>
+        <div className="signage-indicator-stack__legend">
+          <SignageStatRow
+            label={<><SignageLegendDot color="#1B8354" /> {periodLabel}</>}
+            value={formatNumber(periodValue)}
+            valueTone="green"
+          />
+          <SignageStatRow
+            label={<><SignageLegendDot color="#D1E9FF" /> الباقي</>}
+            value={formatNumber(remainder)}
+            valueTone="blue"
+          />
+          <SignageStatRow label="الإجمالي" value={formatNumber(total)} />
+        </div>
+      </div>
+    );
+  }
 
   if (horizontal) {
     return (
