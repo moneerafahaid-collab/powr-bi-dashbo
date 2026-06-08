@@ -113,23 +113,82 @@ html.signage-mode {
 }
 
 html.signage-mode .signage-layout {
-  grid-template-rows: minmax(0, auto) minmax(0, 1.58fr) minmax(0, 0.82fr);
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
   gap: var(--signage-gap);
   padding: var(--signage-pad);
 }
 
 html.signage-mode .signage-kpi-row {
-  max-height: min(12.5vh, calc(88px * var(--signage-scale)));
+  max-height: min(11vh, calc(80px * var(--signage-scale)));
   overflow: hidden;
 }
 
-html.signage-mode .signage-charts-row {
-  gap: var(--signage-gap);
-  padding: var(--signage-pad);
+/* شبكة 4 مؤشرات 2×2 */
+.signage-indicators-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden;
 }
 
-html.signage-mode .signage-chart-slot {
-  border-radius: 6px;
+html.signage-mode .signage-indicators-grid {
+  gap: var(--signage-gap);
+}
+
+.signage-mini-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.signage-mini-card__title {
+  font-size: 8px;
+  line-height: 1.2;
+}
+
+html.signage-mode .signage-mini-card__title {
+  font-size: var(--signage-font-sm);
+}
+
+.signage-mini-card__body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+}
+
+html.signage-mode .signage-mini-card__body {
+  padding: max(2px, calc(2px * var(--signage-scale))) max(3px, calc(4px * var(--signage-scale)));
+}
+
+.signage-trend-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.signage-trend-panel__title {
+  font-size: 9px;
+}
+
+html.signage-mode .signage-trend-panel__title {
+  font-size: var(--signage-font-sm);
+}
+
+.signage-trend-chart {
+  width: 100%;
+  flex-shrink: 0;
+  padding: 2px 4px 4px;
 }
 
 html.signage-mode .dga-widget-stat {
@@ -154,8 +213,8 @@ html.signage-mode .stat-icon-box-sm {
   height: max(18px, calc(20px * var(--signage-scale)));
 }
 
-html.signage-mode .signage-chart-body svg {
-  max-height: min(calc(92px * var(--signage-scale)), 11vh);
+html.signage-mode .signage-mini-card__body svg {
+  max-height: min(calc(76px * var(--signage-scale)), 9.5vh);
 }
 
 html.signage-mode footer .h-1\.5 {
@@ -174,8 +233,9 @@ html.signage-mode footer .h-1\.5 {
 }
 
 html.signage-mode .signage-circle-slot {
-  width: var(--signage-circle);
-  height: var(--signage-circle);
+  width: min(var(--signage-circle), 34%);
+  height: min(var(--signage-circle), 100%);
+  max-height: 9.5vh;
 }
 
 html.signage-mode .widget-circle-layout {
@@ -190,15 +250,6 @@ html.signage-mode .widget-circle-content {
 html.signage-mode .widget-circle-content .font-bold,
 html.signage-mode .widget-circle-content [class*='font-bold'] {
   font-size: var(--signage-font-md);
-}
-
-html.signage-mode .signage-chart-slot > p {
-  font-size: var(--signage-font-sm) !important;
-  margin-bottom: max(1px, calc(2px * var(--signage-scale)));
-}
-
-html.signage-mode .signage-panel .dga-widget > div:nth-child(2) p {
-  font-size: var(--signage-font-sm) !important;
 }
 
 html.signage-mode header {
@@ -221,50 +272,6 @@ html.signage-mode main {
   overflow: hidden;
 }
 
-.signage-panel {
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.signage-charts-row {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  padding: 6px;
-}
-
-.signage-charts-row-4 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px;
-}
-
-html.signage-mode .signage-charts-row-4 {
-  gap: max(2px, calc(3px * var(--signage-scale)));
-  padding: max(2px, calc(3px * var(--signage-scale)));
-}
-
-.signage-chart-slot {
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  border-radius: 8px;
-  background: #fafbfc;
-  border: 1px solid var(--dga-gray-200);
-}
-
-.signage-chart-body {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
 
 /* جوال — تمرير عمودي، كروت مكدّسة */
 .mobile-layout {

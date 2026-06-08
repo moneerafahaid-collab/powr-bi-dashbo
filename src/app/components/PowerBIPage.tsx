@@ -8,6 +8,8 @@ import { DonutWidget } from './DonutWidget';
 import { CompareStrip } from './CompareStrip';
 import { CompareWidget } from './CompareWidget';
 import { SummaryWidget } from './SummaryWidget';
+import { SignageMiniCard } from './SignageMiniCard';
+import { useSignageChartHeight } from './ui/use-signage-chart-height';
 import {
   AreaChart,
   Area,
@@ -111,99 +113,75 @@ function MobileDashboard({ data }: { data: SimpleMetrics }) {
   );
 }
 
-/** شاشة العرض — شبكة ثابتة بدون تداخل */
+/** شاشة العرض 50×80 — 3 صفوف: KPI | 4 مؤشرات | اتجاه الأداء */
 function SignageDashboard({ data }: { data: SimpleMetrics }) {
   const periodMeta = PERIOD_META[data.period];
   const growth = data.growth ?? 0;
-  const targetPct = data.target ? Math.min((data.total / data.target) * 100, 100) : null;
+  const trendHeight = useSignageChartHeight(0.24, 110);
 
   const trendData = Array.from({ length: 6 }, (_, i) => ({
     label: `ف${i + 1}`,
     value: Math.round(data.periodValue * (0.78 + (i / 5) * 0.22))
   }));
 
+  const widgetProps = {
+    total: data.total,
+    periodValue: data.periodValue,
+    periodLabel: periodMeta.label,
+    compact: true as const,
+    horizontal: true as const
+  };
+
   return (
-    <div className="signage-layout signage-dashboard">
-      {/* صف 1: KPI */}
+    <div className="signage-layout">
       <StatWidgets data={data} signage />
 
-      {/* صف 2: تحليل المؤشر */}
-      <div className="signage-panel dga-widget">
-        <div className="h-0.5 shrink-0 bg-[#1B8354]" />
-        <div className="shrink-0 px-2 py-1 border-b border-[#E5E7EB] flex items-center justify-between">
-          <p className="text-[10px] font-semibold text-[#384250]">تحليل المؤشر</p>
-          {targetPct !== null && (
-            <span className="text-[8px] font-semibold text-[#1B8354] bg-[#F3FCF6] px-1.5 py-px rounded">
-              {targetPct.toFixed(0)}% من الهدف
-            </span>
-          )}
-        </div>
+      <div className="signage-indicators-grid">
+        <SignageMiniCard title={data.target ? 'تحقيق الهدف' : 'نسبة الإنجاز'} accent="green">
+          <KPIGaugeDashboard
+            {...widgetProps}
+            target={data.target}
+            growth={growth}
+            embedded
+          />
+        </SignageMiniCard>
 
-        <div className="signage-charts-row signage-charts-row-4">
-          <div className="signage-chart-slot p-1">
-            <p className="text-[8px] font-semibold text-[#384250] shrink-0 mb-0.5">تحقيق الهدف</p>
-            <div className="signage-chart-body">
-              <KPIGaugeDashboard
-                total={data.total}
-                periodValue={data.periodValue}
-                periodLabel={periodMeta.label}
-                target={data.target}
-                growth={growth}
-                compact
-                embedded
-                horizontal
-              />
-            </div>
-          </div>
-          <div className="signage-chart-slot p-1">
-            <p className="text-[8px] font-semibold text-[#384250] shrink-0 mb-0.5">توزيع {periodMeta.label}</p>
-            <div className="signage-chart-body">
-              <DonutWidget total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} compact horizontal />
-            </div>
-          </div>
-          <div className="signage-chart-slot p-1">
-            <p className="text-[8px] font-semibold text-[#384250] shrink-0 mb-0.5">مقارنة</p>
-            <div className="signage-chart-body">
-              <CompareWidget total={data.total} periodValue={data.periodValue} periodLabel={periodMeta.label} compact horizontal />
-            </div>
-          </div>
-          <div className="signage-chart-slot p-1">
-            <p className="text-[8px] font-semibold text-[#384250] shrink-0 mb-0.5">ملخص الأداء</p>
-            <div className="signage-chart-body">
-              <SummaryWidget
-                total={data.total}
-                periodValue={data.periodValue}
-                periodLabel={periodMeta.label}
-                target={data.target}
-                growth={growth}
-                compact
-                horizontal
-              />
-            </div>
-          </div>
-        </div>
+        <SignageMiniCard title={`توزيع ${periodMeta.label}`} accent="blue">
+          <DonutWidget {...widgetProps} />
+        </SignageMiniCard>
+
+        <SignageMiniCard title="مقارنة" accent="gold">
+          <CompareWidget {...widgetProps} />
+        </SignageMiniCard>
+
+        <SignageMiniCard title="ملخص الأداء" accent="neutral">
+          <SummaryWidget {...widgetProps} target={data.target} growth={growth} />
+        </SignageMiniCard>
       </div>
 
-      {/* صف 3: اتجاه الأداء — نفس ارتفاع التحليل */}
-      <DashboardWidget title={`اتجاه الأداء — ${periodMeta.label}`} accent="blue" dense className="signage-panel">
-        <div className="flex-1 min-h-0 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={trendData} margin={{ top: 2, right: 4, left: 0, bottom: 0 }}>
+      <div className="signage-trend-panel dga-widget">
+        <div className="shrink-0 h-0.5 bg-[#175CD3]" />
+        <p className="signage-trend-panel__title shrink-0 px-2 py-1 border-b border-[#E5E7EB] font-semibold text-[#384250]">
+          اتجاه الأداء — {periodMeta.label}
+        </p>
+        <div className="signage-trend-chart" style={{ height: trendHeight }}>
+          <ResponsiveContainer width="100%" height={trendHeight}>
+            <AreaChart data={trendData} margin={{ top: 4, right: 6, left: 0, bottom: 2 }}>
               <defs>
                 <linearGradient id={`trend-${data.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.3} />
+                  <stop offset="5%" stopColor={DGA.info[600]} stopOpacity={0.35} />
                   <stop offset="95%" stopColor={DGA.info[600]} stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke={DGA.gray[200]} vertical={false} />
-              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 8 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
-              <YAxis tick={{ fill: DGA.gray[500], fontSize: 8 }} axisLine={false} tickLine={false} width={24} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
+              <XAxis dataKey="label" tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={{ stroke: DGA.gray[300] }} tickLine={false} />
+              <YAxis tick={{ fill: DGA.gray[500], fontSize: 9 }} axisLine={false} tickLine={false} width={28} tickFormatter={(v) => `${(v / 1000).toFixed(0)}K`} />
               <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [formatNumber(v), '']} />
-              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 3 }} />
+              <Area type="monotone" dataKey="value" stroke={DGA.info[600]} strokeWidth={2} fill={`url(#trend-${data.id})`} dot={false} activeDot={{ r: 4 }} />
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </DashboardWidget>
+      </div>
     </div>
   );
 }

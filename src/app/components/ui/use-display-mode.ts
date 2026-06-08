@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 export type DisplayMode = 'mobile' | 'signage' | 'desktop';
 
 const MOBILE_MAX = 768;
+/** عرض أقصى يُعتبر فيه الجهاز جوالاً وليس شاشة عرض */
+const PHONE_MAX_WIDTH = 430;
 const FORCE_MODE_KEY = 'powr-display-mode';
 
 /** شاشة العرض الفعلية: عرض 50سم × طول 80سم → نسبة 5:8 */
 export const SIGNAGE_PHYSICAL = { widthCm: 50, heightCm: 80 } as const;
-export const SIGNAGE_ASPECT = SIGNAGE_PHYSICAL.widthCm / SIGNAGE_PHYSICAL.heightCm; // 0.625
-/** مرجع المعاينة على الكمبيوتر: 500×800 بكسل */
+export const SIGNAGE_ASPECT = SIGNAGE_PHYSICAL.widthCm / SIGNAGE_PHYSICAL.heightCm;
 export const SIGNAGE_REF = { width: 500, height: 800 } as const;
 
 function readForcedMode(): DisplayMode | null {
@@ -48,18 +49,22 @@ function getDisplayMode(): DisplayMode {
 
   const w = window.innerWidth;
   const h = window.innerHeight;
+  const portrait = h > w;
 
-  if (w <= MOBILE_MAX) return 'mobile';
-  /** أي شاشة طولية أو قريبة من 5:8 = وضع العرض */
-  if (h > w || w / h < 0.92) return 'signage';
+  /** جوال حقيقي فقط (عرض ضيق) */
+  if (w <= PHONE_MAX_WIDTH) return 'mobile';
+
+  /**
+   * شاشة عرض 50×80 — أي شاشة طولية أو عرض ضيق (حتى 768px)
+   * يجب أن تسبق فحص الجوال حتى لا تظهر واجهة الموبايل على شاشة العرض
+   */
+  if (portrait || w / h < 0.92 || w <= MOBILE_MAX) return 'signage';
+
   return 'desktop';
 }
 
-/** معامل القياس لشاشة 50×80 — يوحّد المقاس بين الكمبيوتر والشاشة الفعلية */
 export function getSignageScale(w = window.innerWidth, h = window.innerHeight): number {
-  const byW = w / SIGNAGE_REF.width;
-  const byH = h / SIGNAGE_REF.height;
-  const raw = Math.min(byW, byH);
+  const raw = Math.min(w / SIGNAGE_REF.width, h / SIGNAGE_REF.height);
   return Math.min(Math.max(raw, 0.55), 1.4);
 }
 
@@ -87,7 +92,6 @@ export function useDisplayMode(): DisplayMode {
   return mode;
 }
 
-/** كل شاشات العرض الطولية تستخدم مقاس 50×80 */
 export function useSignageScaleEffect(enabled: boolean): void {
   useEffect(() => {
     if (!enabled) {

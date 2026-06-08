@@ -56,9 +56,11 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
       compact={compact}
       circle={<CompareRing total={total} periodValue={periodValue} periodLabel={periodLabel} compact={compact} />}
     >
-      <p className={`font-bold text-[#111927] tabular-nums ${compact ? 'text-sm' : 'text-base'}`}>{ratio}%</p>
-      <p className={`text-[#6C737F] ${compact ? 'text-[8px]' : 'text-[9px]'}`}>نسبة {periodLabel} من الإجمالي</p>
-      <div className={`space-y-0.5 ${compact ? 'mt-0.5' : 'mt-1'}`}>
+      {!compact && (
+        <p className="font-bold text-[#111927] tabular-nums text-base">{ratio}%</p>
+      )}
+      <p className={`text-[#6C737F] ${compact ? 'text-[7px]' : 'text-[9px]'}`}>نسبة {periodLabel} من الإجمالي</p>
+      <div className="space-y-0.5">
         <div className="flex justify-between text-[8px] text-[#6C737F]">
           <span>{periodLabel}</span>
           <span className="font-semibold text-[#1B8354] tabular-nums">{formatNumber(periodValue)}</span>
