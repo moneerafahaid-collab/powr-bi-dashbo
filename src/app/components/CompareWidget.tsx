@@ -12,7 +12,13 @@ interface CompareWidgetProps {
   horizontal?: boolean;
 }
 
-function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidgetProps) {
+function CompareRing({
+  total,
+  periodValue,
+  periodLabel,
+  compact,
+  showSubLabel = true
+}: CompareWidgetProps & { showSubLabel?: boolean }) {
   const remainder = Math.max(total - periodValue, 0);
   const pct = total > 0 ? ((periodValue / total) * 100).toFixed(0) : '0';
   const slices = [
@@ -33,7 +39,7 @@ function CompareRing({ total, periodValue, periodLabel, compact }: CompareWidget
       </ResponsiveContainer>
       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <span className="signage-ring-pct font-bold text-[#111927] tabular-nums">{pct}%</span>
-        <span className="signage-ring-sub text-[#384250]">مقارنة</span>
+        {showSubLabel && <span className="signage-ring-sub text-[#384250]">مقارنة</span>}
       </div>
     </div>
   );
@@ -44,6 +50,23 @@ export function CompareWidget({ total, periodValue, periodLabel, compact = false
 
   if (!horizontal) {
     return <CompareStrip total={total} periodValue={periodValue} periodLabel={periodLabel} compact={compact} />;
+  }
+
+  if (compact) {
+    return (
+      <div className="signage-compare-stack">
+        <div className="signage-compare-stack__ring">
+          <CompareRing
+            total={total}
+            periodValue={periodValue}
+            periodLabel={periodLabel}
+            compact={compact}
+            showSubLabel={false}
+          />
+        </div>
+        <p className="signage-compare-stack__caption">نسبة {periodLabel} من الإجمالي</p>
+      </div>
+    );
   }
 
   return (
